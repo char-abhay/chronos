@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Instrument_Sans, Inter, JetBrains_Mono } from "next/font/google";
+import { Atmosphere } from "@/components/atmosphere/Atmosphere";
 import { Footer } from "@/components/layout/Footer";
 import { Chrome } from "@/components/navigation/Chrome";
 import { SkipLink } from "@/components/navigation/SkipLink";
@@ -62,10 +63,23 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Scroll reveals render hidden and are unhidden by script. With
+            JavaScript off, this forces them visible so the portfolio is
+            fully readable -- the content must never depend on the
+            animation layer. */}
+        <noscript>
+          <style>{"[data-reveal]{opacity:1 !important;transform:none !important}"}</style>
+        </noscript>
+      </head>
       <body
         className={`${instrumentSans.variable} ${inter.variable} ${jetbrainsMono.variable}`}
       >
         <SkipLink />
+
+        {/* Persistent across every route: never unmounts, so moving
+            between regions shifts hue rather than flashing black. */}
+        <Atmosphere />
 
         {/* ProfileContent is rendered on the server and handed to the
             client Chrome as a node, so the profile content never enters

@@ -3,11 +3,15 @@ import type { Destination } from "./schema";
 /**
  * Eight regions -- every one of them about Abhay.
  *
- * The space naming is PRESENTATION: it drives the visual language,
- * the motion and the sense of travel between regions. It is not the
- * content. Each destination owns a real part of the portfolio, and the
- * curiosity comes from interaction -- things you click and uncover --
- * not from explanatory text.
+ * NAMES STAY SCIENTIFIC AND LITERAL (Abhay, 2026-08-24). Navigation is
+ * where a visitor must never have to decode anything, so the rail says
+ * Earth, Solar System, Galaxy, Black Holes. The cinematic feel is
+ * carried by the visual design, the motion and the interactions -- not
+ * by making the reader guess what a label means.
+ *
+ * The hooks are the curiosity layer: short, atmospheric, and slightly
+ * withholding. They should make someone want to open a region, never
+ * summarise what is inside it.
  */
 export const destinations: Destination[] = [
   {
@@ -16,7 +20,7 @@ export const destinations: Destination[] = [
     name: "Home",
     href: "/",
     scale: "Entry",
-    hook: "Abhay P",
+    hook: "Start here.",
   },
   {
     id: "time",
@@ -29,7 +33,7 @@ export const destinations: Destination[] = [
   {
     id: "earth",
     index: "03",
-    name: "Origin",
+    name: "Earth",
     href: "/earth",
     scale: "Kasaragod → Bangalore",
     hook: "Where this started.",
@@ -37,23 +41,23 @@ export const destinations: Destination[] = [
   {
     id: "solar-system",
     index: "04",
-    name: "Systems",
+    name: "Solar System",
     href: "/solar-system",
     scale: "5 built",
-    hook: "Everything I have built.",
+    hook: "Five builds, still in orbit.",
   },
   {
     id: "galaxy",
     index: "05",
-    name: "Constellation",
+    name: "Galaxy",
     href: "/galaxy",
     scale: "6 clusters",
-    hook: "What I can work with.",
+    hook: "What connects to what.",
   },
   {
     id: "black-holes",
     index: "06",
-    name: "Pressure",
+    name: "Black Holes",
     href: "/black-holes",
     scale: "The hard parts",
     hook: "The problems that did not solve themselves.",
@@ -61,7 +65,7 @@ export const destinations: Destination[] = [
   {
     id: "future",
     index: "07",
-    name: "Next",
+    name: "Future",
     href: "/future",
     scale: "Unwritten",
     hook: "Where this goes.",
@@ -69,7 +73,7 @@ export const destinations: Destination[] = [
   {
     id: "story",
     index: "08",
-    name: "Story",
+    name: "My Story",
     href: "/story",
     scale: "The whole arc",
     hook: "All of it, in one line.",
