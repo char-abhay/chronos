@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/layout/Container";
+import { InView } from "@/components/motion/InView";
 import { Arrival } from "@/components/sections/Arrival";
 import { Departure } from "@/components/sections/Departure";
 import { Reveal } from "@/components/interactive/Reveal";
@@ -35,10 +36,12 @@ export default function PressurePage() {
       />
 
       <Container className="pt-12 sm:pt-16">
-        <p className="max-w-reading text-body-lg text-secondary">
-          Every build has a part that resists. These are the ones that took
-          the longest to get right.
-        </p>
+        <InView>
+          <p className="max-w-reading text-body-lg text-secondary">
+            Every build has a part that resists. These are the ones that took
+            the longest to get right.
+          </p>
+        </InView>
 
         {withChallenges.map((project) => (
           <section
@@ -61,13 +64,11 @@ export default function PressurePage() {
 
             <div className="mt-6 flex flex-col gap-3">
               {project.challenges!.map((challenge, i) => (
-                <Reveal
-                  key={challenge.title}
-                  label={challenge.title}
-                  meta={"0" + String(i + 1)}
-                >
-                  <p className="text-secondary">{challenge.body}</p>
-                </Reveal>
+                <InView key={challenge.title} delay={Math.min(i * 70, 280)}>
+                  <Reveal label={challenge.title} meta={"0" + String(i + 1)}>
+                    <p className="text-secondary">{challenge.body}</p>
+                  </Reveal>
+                </InView>
               ))}
             </div>
           </section>

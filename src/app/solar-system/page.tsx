@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/layout/Container";
+import { InView } from "@/components/motion/InView";
 import { Arrival } from "@/components/sections/Arrival";
 import { Departure } from "@/components/sections/Departure";
 import { Reveal } from "@/components/interactive/Reveal";
@@ -27,13 +28,16 @@ export default function SystemsPage() {
       />
 
       <Container className="pt-12 sm:pt-16">
-        <p className="max-w-reading text-body-lg text-secondary">
-          One built on the job, four for the degree. Open any of them.
-        </p>
+        <InView>
+          <p className="max-w-reading text-body-lg text-secondary">
+            One built on the job, four for the degree. Open any of them.
+          </p>
+        </InView>
 
         <ol className="mt-10 flex flex-col gap-3">
-          {projectsOrdered.map((project) => (
+          {projectsOrdered.map((project, i) => (
             <li key={project.slug}>
+              <InView delay={Math.min(i * 60, 300)}>
               <Reveal
                 label={project.name}
                 meta={
@@ -73,6 +77,7 @@ export default function SystemsPage() {
                   </div>
                 </div>
               </Reveal>
+              </InView>
             </li>
           ))}
         </ol>
