@@ -8,4 +8,3 @@ export { skillGroups, softSkills, certifications } from "./skills";
 export { projects, projectsOrdered, getProject } from "./projects";
 export { destinations, getDestination } from "./destinations";
 export { storySegments } from "./story";
-export { scienceModules, getScience } from "./science";

@@ -108,6 +108,16 @@ export type SkillGroup = {
    * on the resume — understating is more credible than inflating.
    */
   note?: string;
+  /**
+   * Project slugs that demonstrate this cluster. Only where the
+   * project's own technology list supports the claim.
+   *
+   * Absent means no project demonstrates it yet -- and absence renders
+   * as nothing, never as an empty state. Cloud Computing is the degree
+   * specialisation and currently has no project behind it; that is a
+   * real gap to fill, not something to advertise on the site.
+   */
+  relatedProjects?: string[];
 };
 
 export type Certification = {
@@ -191,35 +201,6 @@ export type Destination = {
   scale: string;
   /** One-line hook. */
   hook: string;
-};
-
-/* --- Science content --- */
-
-export type Source = {
-  /** Full citation: author, year, publication. Stands on its own. */
-  label: string;
-  /** Only when a stable URL is genuinely known. Never invented. */
-  href?: string;
-};
-
-/**
- * Progressive disclosure, per plan Section 15.
- * L1 headline -> L2 accessible -> L3 deeper.
- * Every L3 claim carries at least one source.
- */
-export type ScienceConcept = {
-  id: string;
-  l1: string;
-  l2: string;
-  l3: string;
-  /** Stated limits, assumptions or open questions. Optional but preferred. */
-  caveat?: string;
-  sources: Source[];
-};
-
-export type ScienceModule = {
-  destination: DestinationId;
-  concepts: ScienceConcept[];
 };
 
 /* --- My Story --- */

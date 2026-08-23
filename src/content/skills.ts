@@ -18,6 +18,9 @@ export const skillGroups: SkillGroup[] = [
     id: "web",
     label: "Web Technologies",
     items: ["HTML", "CSS", "Full Stack Development Basics"],
+    // Every link below is justified by that project's own technology
+    // list. Nothing is asserted that the project data does not support.
+    relatedProjects: ["ecommerce-website", "dvoting"],
   },
   {
     id: "data",
@@ -52,6 +55,12 @@ export const skillGroups: SkillGroup[] = [
     label: "Other Technologies",
     items: ["AI Basics", "Blockchain", "IoT", "Cybersecurity Fundamentals"],
     note: "Coursework-level knowledge",
+    relatedProjects: [
+      "ai-chatbot",
+      "dvoting",
+      "object-detection-system",
+      "digital-voting-machine",
+    ],
   },
 ];
 

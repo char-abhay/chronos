@@ -1,11 +1,13 @@
 import type { Destination } from "./schema";
 
 /**
- * The eight regions of one continuous universe.
+ * Eight regions -- every one of them about Abhay.
  *
- * `scale` is the marker in each ARRIVAL stamp. It is the mechanism that
- * makes the scale ladder felt rather than stated -- the numbers step by
- * orders of magnitude while the typography stays identical.
+ * The space naming is PRESENTATION: it drives the visual language,
+ * the motion and the sense of travel between regions. It is not the
+ * content. Each destination owns a real part of the portfolio, and the
+ * curiosity comes from interaction -- things you click and uncover --
+ * not from explanatory text.
  */
 export const destinations: Destination[] = [
   {
@@ -13,64 +15,64 @@ export const destinations: Destination[] = [
     index: "01",
     name: "Home",
     href: "/",
-    scale: "Here · now",
-    hook: "You are looking at the past.",
+    scale: "Entry",
+    hook: "Abhay P",
   },
   {
     id: "time",
     index: "02",
     name: "Time",
     href: "/time",
-    scale: "One second",
-    hook: "Two clocks can disagree and both be right.",
+    scale: "2023 — 2026",
+    hook: "Three years, in order.",
   },
   {
     id: "earth",
     index: "03",
-    name: "Earth",
+    name: "Origin",
     href: "/earth",
-    scale: "12,742 km",
-    hook: "The only place the arrow of time has ever been observed by anyone.",
+    scale: "Kasaragod → Bangalore",
+    hook: "Where this started.",
   },
   {
     id: "solar-system",
     index: "04",
-    name: "Solar System",
+    name: "Systems",
     href: "/solar-system",
-    scale: "8 light-minutes",
-    hook: "Sunlight is already old when it reaches you.",
+    scale: "5 built",
+    hook: "Everything I have built.",
   },
   {
     id: "galaxy",
     index: "05",
-    name: "Galaxy",
+    name: "Constellation",
     href: "/galaxy",
-    scale: "100,000 light-years",
-    hook: "Every point of light here is a different age.",
+    scale: "6 clusters",
+    hook: "What I can work with.",
   },
   {
     id: "black-holes",
     index: "06",
-    name: "Black Holes",
+    name: "Pressure",
     href: "/black-holes",
-    scale: "Beyond return",
-    hook: "Where the intuition stops working.",
+    scale: "The hard parts",
+    hook: "The problems that did not solve themselves.",
   },
   {
     id: "future",
     index: "07",
-    name: "Future",
+    name: "Next",
     href: "/future",
-    scale: "Not yet",
-    hook: "The one region nobody has observed.",
+    scale: "Unwritten",
+    hook: "Where this goes.",
   },
   {
     id: "story",
     index: "08",
-    name: "My Story",
+    name: "Story",
     href: "/story",
-    scale: "2023 — now",
-    hook: "Every future becomes someone's past.",
+    scale: "The whole arc",
+    hook: "All of it, in one line.",
   },
 ];
 

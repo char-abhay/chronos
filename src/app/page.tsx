@@ -3,8 +3,6 @@ import { Departure } from "@/components/sections/Departure";
 import { ButtonLink } from "@/components/ui/Button";
 import { ExternalLink } from "@/components/ui/ExternalLink";
 import { Stamp } from "@/components/ui/Stamp";
-import { ConceptList } from "@/components/science/ConceptList";
-import { getScience } from "@/content/science";
 import { education, experience, profile } from "@/content";
 
 /**
@@ -16,7 +14,6 @@ import { education, experience, profile } from "@/content";
  * or any JavaScript.
  */
 export default function Home() {
-  const science = getScience("home");
   const role = experience[0];
 
   return (
@@ -25,21 +22,18 @@ export default function Home() {
         <Stamp>01 · Home · Here · now</Stamp>
 
         <h1 className="mt-6 max-w-reading font-display text-display-xl leading-display tracking-display text-primary">
-          You are looking at the past.
+          {profile.name}
         </h1>
         <p className="mt-6 max-w-reading text-body-lg text-secondary">
-          Light is fast, but it is not instant. Everything you can see is
-          being seen as it was when the light left it.
+          {profile.credential}, specialising in Cloud Computing. Five things
+          built, one of them on the job.
         </p>
 
         {/* Identity block. Above the fold, in the HTML, always. */}
         <div className="mt-12 border-t border-hairline pt-8">
-          <p className="font-display text-display-sm leading-display tracking-display text-primary">
-            {profile.name}
-          </p>
-          <p className="mt-2 text-secondary">
-            {profile.credential} — Cloud Computing · {education.institution},{" "}
-            {education.location}
+          <p className="text-secondary">
+            {education.qualification} · {education.institution},{" "}
+            {education.location} ({education.dates.label})
           </p>
           <p className="mt-1 text-secondary">
             {role.role} — {role.organisation} ({role.dates.label})
@@ -74,12 +68,6 @@ export default function Home() {
           </div>
         </div>
       </Container>
-
-      {science ? (
-        <Container className="pt-20 sm:pt-28">
-          <ConceptList concepts={science.concepts} />
-        </Container>
-      ) : null}
 
       <Departure from="home" />
     </>
