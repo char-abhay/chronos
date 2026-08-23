@@ -1,0 +1,100 @@
+/* ============================================================
+   CHRONOS — DESIGN TOKENS
+   Single source of truth. Never use a raw colour or size value
+   in a component; only reference these tokens.
+   See plan Section F.
+   ============================================================ */
+
+:root {
+  /* --- BACKGROUND HIERARCHY (four levels, never more) --- */
+  --ground:         #08090b;  /* page base: near-black, faint warm-neutral shift */
+  --ground-raised:  #101216;  /* content plates, cards */
+  --ground-inset:   #050608;  /* wells, code blocks, inputs */
+  --ground-scrim:   rgb(8 9 11 / 0.82); /* mandatory backdrop behind text over motion */
+
+  /* --- TEXT HIERARCHY (documented minimum contrast vs --ground) --- */
+  --text-primary:   #f2f0ec;  /* ~17:1  */
+  --text-secondary: #b8b4ac;  /* ~9.7:1 */
+  --text-muted:     #8a867e;  /* ~5.4:1 — HARD FLOOR for meaningful text */
+  --text-faint:     #5a5750;  /* ~2.7:1 — DECORATIVE ONLY, never load-bearing */
+
+  /* --- ACCENTS: strictly separated by function --- */
+  /* warm = you can act on it */
+  --signal:         #e3a857;
+  --signal-dim:     rgb(227 168 87 / 0.40);
+  --signal-faint:   rgb(227 168 87 / 0.12);
+  /* cold = it is a measurement */
+  --data:           #8fb8c4;
+  --data-dim:       rgb(143 184 196 / 0.40);
+
+  /* --- STATUS (never colour alone; always paired with icon + text) --- */
+  --status-warn:    #c97b4e;
+  --status-error:   #c25b4a;
+  --status-ok:      #7e9e86;
+
+  /* --- ATMOSPHERE (decorative only, never carries information) --- */
+  --atmo-far:       rgb(143 184 196 / 0.04);
+  --atmo-mid:       rgb(184 180 172 / 0.06);
+  --atmo-near:      rgb(227 168 87 / 0.05);
+
+  /* --- BORDERS: hairlines only, the primary structural device --- */
+  --hairline:       rgb(242 240 236 / 0.08);
+  --hairline-strong:rgb(242 240 236 / 0.14);
+
+  /* --- SPACING RAMP (8px base; no arbitrary values) --- */
+  --space-1: 4px;   --space-2: 8px;   --space-3: 12px;  --space-4: 16px;
+  --space-5: 24px;  --space-6: 32px;  --space-7: 48px;  --space-8: 64px;
+  --space-9: 96px;  --space-10: 128px; --space-11: 192px;
+
+  /* --- LAYOUT --- */
+  --container-max: 1280px;
+  --prose-max: 68ch;
+  --rail-width: 64px;
+
+  /* --- TYPE SCALE ---
+     Display is fluid. Body is stepped, NOT fluid (avoids awkward
+     intermediate values at mid viewports). */
+  --display-xl: clamp(2.75rem, 1.6rem + 5.2vw, 6rem);
+  --display-lg: clamp(2.25rem, 1.5rem + 3.4vw, 4rem);
+  --display-md: clamp(1.75rem, 1.3rem + 2.1vw, 2.75rem);
+  --display-sm: clamp(1.375rem, 1.15rem + 1.1vw, 1.875rem);
+  --body-lg:   1.125rem;
+  --body:      1rem;   /* 16px floor on mobile — non-negotiable */
+  --body-sm:   0.9375rem;
+  --label:     0.75rem;
+
+  --leading-display: 1.08;
+  --leading-body: 1.6;
+  --tracking-display: -0.02em;
+  --tracking-label: 0.1em;
+
+  /* --- MOTION: gravity, not bounce. No overshoot anywhere. --- */
+  --dur-micro: 160ms;      /* state changes */
+  --dur-ui: 320ms;         /* panels, overlays, reveals */
+  --dur-traversal: 900ms;  /* destination changes */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* --- ELEVATION: depth via background levels + hairlines, not shadows --- */
+  --blur-glass: 16px;
+}
+
+/* Per-destination atmospheric hue temperature.
+   Same tokens, same contrast ratios — atmosphere only. */
+[data-destination="home"]         { --atmo-near: rgb(227 168 87 / 0.05); }
+[data-destination="time"]         { --atmo-near: rgb(232 214 178 / 0.07); }
+[data-destination="earth"]        { --atmo-near: rgb(150 190 175 / 0.06); }
+[data-destination="solar-system"] { --atmo-near: rgb(206 154 88 / 0.06); }
+[data-destination="galaxy"]       { --atmo-near: rgb(160 150 178 / 0.05); }
+[data-destination="black-holes"]  { --atmo-near: rgb(255 138 60 / 0.04); }
+[data-destination="future"]       { --atmo-near: rgb(226 228 232 / 0.03); }
+[data-destination="story"]        { --atmo-near: rgb(224 176 132 / 0.06); }
+
+/* Reduced motion is a FIRST-CLASS RENDERING MODE, not a stripped fallback. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-micro: 0ms;
+    --dur-ui: 150ms;
+    --dur-traversal: 150ms;
+  }
+}

@@ -1,26 +1,99 @@
 @import "tailwindcss";
+@import "../styles/tokens.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/* Map CHRONOS tokens onto Tailwind utilities.
+   This is what lets components use bg-ground / text-muted / etc.
+   without ever hardcoding a raw value. */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ground: var(--ground);
+  --color-ground-raised: var(--ground-raised);
+  --color-ground-inset: var(--ground-inset);
+
+  --color-primary: var(--text-primary);
+  --color-secondary: var(--text-secondary);
+  --color-muted: var(--text-muted);
+  --color-faint: var(--text-faint);
+
+  --color-signal: var(--signal);
+  --color-data: var(--data);
+
+  --color-warn: var(--status-warn);
+  --color-error: var(--status-error);
+  --color-ok: var(--status-ok);
+
+  --color-hairline: var(--hairline);
+
+  /* Type scale registered as real Tailwind utilities:
+     text-display-lg, text-body, text-label, tracking-display, leading-display */
+  --text-display-xl: var(--display-xl);
+  --text-display-lg: var(--display-lg);
+  --text-display-md: var(--display-md);
+  --text-display-sm: var(--display-sm);
+  --text-body-lg: var(--body-lg);
+  --text-body: var(--body);
+  --text-body-sm: var(--body-sm);
+  --text-label: var(--label);
+
+  --tracking-display: -0.02em;
+  --tracking-label: 0.1em;
+  --leading-display: 1.08;
+  --leading-body: 1.6;
+
+  /* Layout widths: max-w-chronos, max-w-reading */
+  --container-chronos: var(--container-max);
+  --container-reading: var(--prose-max);
+
+  --font-display: var(--font-instrument-sans);
+  --font-body: var(--font-inter);
+  --font-mono: var(--font-jetbrains-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* CHRONOS is a single committed dark experience.
+   The palette is deliberate, not a light/dark pair. */
+html {
+  color-scheme: dark;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--ground);
+  color: var(--text-primary);
+  font-family: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: var(--body);
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* Horizontal scroll on body is never permitted (plan G.3). */
+  overflow-x: hidden;
+}
+
+/* Focus states are designed FIRST, never derived from hover.
+   Visible on every background level (plan F.5). */
+:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+:focus:not(:focus-visible) { outline: none; }
+
+/* Numeric readouts must not jitter as digits change. */
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* Anchor targets clear the fixed chrome. */
+:target { scroll-margin-top: var(--space-9); }
+
+::selection {
+  background: var(--signal-dim);
+  color: var(--text-primary);
+}
+
+/* Global reduced-motion floor. Individual components still define
+   their own designed still-states; this is the safety net. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
