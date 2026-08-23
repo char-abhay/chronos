@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/layout/Container";
+import { InView } from "@/components/motion/InView";
 import { Arrival } from "@/components/sections/Arrival";
 import { Departure } from "@/components/sections/Departure";
 import { Reveal } from "@/components/interactive/Reveal";
+import {
+  TimeScrubber,
+  type TrackItem,
+} from "@/components/interactive/TimeScrubber";
 import { Chip } from "@/components/ui/Chip";
 import { getDestination } from "@/content/destinations";
 import { education, experience, projectsOrdered } from "@/content";
@@ -12,84 +17,48 @@ const destination = getDestination("time")!;
 export const metadata: Metadata = {
   title: destination.name,
   description:
-    "Abhay P — everything, in the order it happened. Degree, internship and five builds between 2023 and 2026.",
+    "Abhay P — degree, internship and five builds between 2023 and 2026, on one timeline.",
 };
 
-/** One ordered list of everything that actually happened, oldest last. */
-function buildEvents() {
-  const events = [
+/** Everything that has a date, as one set of tracks. */
+function buildTracks(): TrackItem[] {
+  return [
     {
-      key: "degree",
-      when: education.dates.label,
-      sortKey: "2023-00",
-      title: education.qualification,
-      hint: "Where the three years start.",
-      body: (
-        <div className="text-secondary">
-          <p>
-            {education.institution} · {education.location}
-          </p>
-          <p className="mt-3 text-body-sm text-muted">
-            Major subjects: {education.majorSubjects.join(" · ")}
-          </p>
-        </div>
-      ),
+      id: "education",
+      label: education.qualification,
+      meta: education.institution + " · " + education.location,
+      start: education.dates.start,
+      end: education.dates.end ?? education.dates.start,
+      kind: "education",
+      detail: "Major subjects: " + education.majorSubjects.join(" · "),
     },
     ...experience.map((role) => ({
-      key: role.organisation,
-      when: role.dates.label,
-      sortKey: role.dates.start,
-      title: role.role,
-      hint: "The only outside assessment on this page.",
-      body: (
-        <div className="text-secondary">
-          <p>
-            {role.organisation} · {role.location}
-          </p>
-          <ul className="mt-4 flex list-disc flex-col gap-2 ps-5 text-body-sm marker:text-faint">
-            {role.bullets.map((b) => (
-              <li key={b}>{b}</li>
-            ))}
-          </ul>
-        </div>
-      ),
+      id: "role-" + role.organisation,
+      label: role.role,
+      meta: role.organisation + " · " + role.location,
+      start: role.dates.start,
+      end: role.dates.end ?? role.dates.start,
+      kind: "internship" as const,
+      detail: role.bullets[0],
     })),
     ...projectsOrdered.map((project) => ({
-      key: project.slug,
-      when: project.dates.label,
-      sortKey: project.dates.start,
-      title: project.name,
-      hint:
-        project.context === "internship"
-          ? "Built on the job, not for a grade."
-          : undefined,
-      body: (
-        <div className="text-secondary">
-          <p>{project.what}</p>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {project.technologies.map((t) => (
-              <Chip key={t}>{t}</Chip>
-            ))}
-          </div>
-          <p className="mt-4 text-body-sm">
-            <a
-              href={"/projects/" + project.slug}
-              className="text-signal underline underline-offset-4 decoration-hairline hover:decoration-signal"
-            >
-              Open the full build →
-            </a>
-          </p>
-        </div>
-      ),
+      id: project.slug,
+      label: project.name,
+      meta: project.dates.label,
+      start: project.dates.start,
+      end: project.dates.end ?? project.dates.start,
+      kind: "build" as const,
+      href: "/projects/" + project.slug,
+      detail: project.what,
     })),
   ];
-
-  // Newest first: the most recent work is what a reader wants first.
-  return events.sort((a, b) => b.sortKey.localeCompare(a.sortKey));
 }
 
 export default function TimePage() {
-  const events = buildEvents();
+  const tracks = buildTracks();
+
+  // Newest first for the written record below.
+  const ordered = [...tracks].sort((a, b) => b.start.localeCompare(a.start));
 
   return (
     <>
@@ -101,18 +70,78 @@ export default function TimePage() {
       />
 
       <Container className="pt-12 sm:pt-16">
-        <p className="max-w-reading text-body-lg text-secondary">
-          Seven entries between 2023 and 2026. Open any of them.
-        </p>
+        <InView>
+          <p className="max-w-reading text-body-lg text-secondary">
+            Drag across three years. The long bar is the degree; everything
+            else happened inside it.
+          </p>
+        </InView>
 
-        <ol className="mt-10 flex flex-col gap-3">
-          {events.map((event) => (
-            <li key={event.key}>
-              <Reveal label={event.title} meta={event.when} hint={event.hint}>
-                {event.body}
-              </Reveal>
-            </li>
-          ))}
+        <InView delay={100} className="mt-10">
+          <TimeScrubber items={tracks} />
+        </InView>
+      </Container>
+
+      {/* The complete written record. Works with no JavaScript, and is
+          what a screen reader or a printout gets. */}
+      <Container className="pt-20 sm:pt-28">
+        <InView>
+          <h2 className="font-mono text-label uppercase tracking-label text-data">
+            The full record
+          </h2>
+        </InView>
+
+        <ol className="mt-6 flex flex-col gap-3">
+          {ordered.map((item, i) => {
+            const project = projectsOrdered.find((p) => p.slug === item.id);
+            return (
+              <li key={item.id}>
+                <InView delay={Math.min(i * 50, 250)}>
+                  <Reveal
+                    label={item.label}
+                    meta={item.meta}
+                    hint={
+                      item.kind === "internship"
+                        ? "The only outside assessment on this site."
+                        : item.kind === "education"
+                          ? "Three years. One of the subjects stuck."
+                          : undefined
+                    }
+                  >
+                    <div className="text-secondary">
+                      {item.detail ? <p>{item.detail}</p> : null}
+
+                      {project ? (
+                        <>
+                          <div className="mt-4 flex flex-wrap gap-2">
+                            {project.technologies.map((t) => (
+                              <Chip key={t}>{t}</Chip>
+                            ))}
+                          </div>
+                          <p className="mt-4 text-body-sm">
+                            <a
+                              href={"/projects/" + project.slug}
+                              className="text-signal underline underline-offset-4 decoration-hairline hover:decoration-signal"
+                            >
+                              Open the full build →
+                            </a>
+                          </p>
+                        </>
+                      ) : null}
+
+                      {item.kind === "internship"
+                        ? experience[0].bullets.slice(1).map((b) => (
+                            <p key={b} className="mt-3 text-body-sm">
+                              {b}
+                            </p>
+                          ))
+                        : null}
+                    </div>
+                  </Reveal>
+                </InView>
+              </li>
+            );
+          })}
         </ol>
       </Container>
 
