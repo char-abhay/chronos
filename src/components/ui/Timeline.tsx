@@ -26,12 +26,17 @@ export function TimelineItem({
   title,
   children,
   className,
+  level = 3,
 }: {
   marker?: string;
   title: string;
   children?: React.ReactNode;
   className?: string;
+  /** Heading level for the entry title. Set 2 when the timeline is the
+      page's top-level content, so the h1 -> h3 skip does not happen. */
+  level?: 2 | 3;
 }) {
+  const Tag = ("h" + level) as "h2" | "h3";
   return (
     <li className={cn("relative ps-8 pb-10 last:pb-0", className)}>
       <span
@@ -43,7 +48,7 @@ export function TimelineItem({
           {marker}
         </p>
       ) : null}
-      <h3 className="mt-2 font-display text-body-lg text-primary">{title}</h3>
+      <Tag className="mt-2 font-display text-body-lg text-primary">{title}</Tag>
       {children ? (
         <div className="mt-2 max-w-reading text-secondary">{children}</div>
       ) : null}

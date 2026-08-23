@@ -112,3 +112,29 @@ body {
      webkit property, which left Firefox with no blur at all. */
   backdrop-filter: blur(var(--blur-glass));
 }
+
+/* Print: the resume and profile pages must produce a clean document.
+   Chrome is removed and the palette inverts to ink on paper. */
+@media print {
+  :root {
+    --ground: #ffffff;
+    --ground-raised: #ffffff;
+    --ground-inset: #ffffff;
+    --text-primary: #000000;
+    --text-secondary: #1a1a1a;
+    --text-muted: #444444;
+    --text-faint: #666666;
+    --hairline: rgb(0 0 0 / 0.2);
+    --signal: #000000;
+    --data: #333333;
+  }
+  html { color-scheme: light; }
+  body { background: #fff; }
+  nav, footer, [role="dialog"] { display: none !important; }
+  main { padding: 0 !important; }
+  a { text-decoration: none !important; color: #000 !important; }
+  /* Print the destination of a link, since it cannot be clicked. */
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.8em; }
+  details { open: true; }
+  details > summary { display: none; }
+}

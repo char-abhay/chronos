@@ -19,6 +19,8 @@ export function Field({
   error,
   multiline,
   className,
+  value,
+  onValueChange,
 }: {
   id: string;
   label: string;
@@ -28,7 +30,22 @@ export function Field({
   error?: string;
   multiline?: boolean;
   className?: string;
+  /** Optional controlled value. Omit for an uncontrolled field. */
+  value?: string;
+  onValueChange?: (value: string) => void;
 }) {
+  // Controlled only when a change handler is supplied, so the same
+  // component works in a server-rendered static form and in a client
+  // form without two variants to keep in sync.
+  const controlled =
+    onValueChange !== undefined
+      ? {
+          value: value ?? "",
+          onChange: (
+            e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+          ) => onValueChange(e.target.value),
+        }
+      : {};
   const errorId = id + "-error";
   const control = cn(
     "w-full rounded-[2px] border bg-ground-inset px-3 py-2.5",
@@ -60,6 +77,7 @@ export function Field({
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? errorId : undefined}
           className={control}
+          {...controlled}
         />
       ) : (
         <input
@@ -71,6 +89,7 @@ export function Field({
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? errorId : undefined}
           className={control}
+          {...controlled}
         />
       )}
 

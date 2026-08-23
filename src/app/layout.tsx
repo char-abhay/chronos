@@ -1,5 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Instrument_Sans, Inter, JetBrains_Mono } from "next/font/google";
+import { Footer } from "@/components/layout/Footer";
+import { Chrome } from "@/components/navigation/Chrome";
+import { SkipLink } from "@/components/navigation/SkipLink";
+import { ProfileContent } from "@/components/portfolio/ProfileContent";
 import "./globals.css";
 
 /* Three roles, three families (plan F.2).
@@ -61,7 +65,21 @@ export default function RootLayout({
       <body
         className={`${instrumentSans.variable} ${inter.variable} ${jetbrainsMono.variable}`}
       >
-        {children}
+        <SkipLink />
+
+        {/* ProfileContent is rendered on the server and handed to the
+            client Chrome as a node, so the profile content never enters
+            the client JavaScript bundle. */}
+        <Chrome profileContent={<ProfileContent headingLevel={2} />} />
+
+        {/* Padding clears the fixed rail on desktop and the fixed bottom
+            bar on mobile. */}
+        <div className="lg:ps-[var(--rail-width)]">
+          <main id="main" className="pb-28 lg:pb-0">
+            {children}
+          </main>
+          <Footer />
+        </div>
       </body>
     </html>
   );
