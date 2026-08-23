@@ -97,3 +97,18 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* Motion durations as utilities, so components reference the tokens
+   instead of hardcoding numbers that drift out of sync. */
+@utility dur-micro { transition-duration: var(--dur-micro); }
+@utility dur-ui { transition-duration: var(--dur-ui); }
+
+/* The scrim required behind any text sitting over an animated layer.
+   Body text NEVER sits directly on moving atmosphere (plan F.1). */
+@utility plate-scrim {
+  background-color: var(--ground-scrim);
+  /* No manual -webkit- prefix: Lightning CSS adds prefixes from the
+     browser targets, and hand-prefixing here made it emit ONLY the
+     webkit property, which left Firefox with no blur at all. */
+  backdrop-filter: blur(var(--blur-glass));
+}

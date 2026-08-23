@@ -29,7 +29,7 @@
 
   /* --- STATUS (never colour alone; always paired with icon + text) --- */
   --status-warn:    #c97b4e;
-  --status-error:   #c25b4a;
+  --status-error:   #d0705d;  /* 5.50:1 on raised plates - error text is body text */
   --status-ok:      #7e9e86;
 
   /* --- ATMOSPHERE (decorative only, never carries information) --- */
