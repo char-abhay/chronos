@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Instrument_Sans, Inter, JetBrains_Mono } from "next/font/google";
 import { Atmosphere } from "@/components/atmosphere/Atmosphere";
+import { SceneRoot } from "@/components/three/SceneRoot";
 import { Footer } from "@/components/layout/Footer";
 import { Chrome } from "@/components/navigation/Chrome";
 import { SkipLink } from "@/components/navigation/SkipLink";
@@ -62,7 +63,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <head>
         {/* Scroll reveals render hidden and are unhidden by script. With
             JavaScript off, this forces them visible so the portfolio is
@@ -80,6 +81,11 @@ export default function RootLayout({
         {/* Persistent across every route: never unmounts, so moving
             between regions shifts hue rather than flashing black. */}
         <Atmosphere />
+
+        {/* The WebGL world, layered over the CSS atmosphere. Loads only
+            on devices that can run it; everywhere else this renders
+            nothing and the atmosphere above is the whole picture. */}
+        <SceneRoot />
 
         {/* ProfileContent is rendered on the server and handed to the
             client Chrome as a node, so the profile content never enters

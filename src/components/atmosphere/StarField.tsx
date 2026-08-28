@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useReducedMotion } from "@/lib/motion/useReducedMotion";
 import { starCount, useDeviceTier } from "@/lib/performance/useDeviceTier";
+import { useSceneActive } from "@/lib/scene/sceneState";
 
 /**
  * Canvas 2D, not WebGL. On purpose.
@@ -32,7 +33,13 @@ export function StarField() {
   const reduced = useReducedMotion();
   const tier = useDeviceTier();
 
+  // When the WebGL world is running it owns the stars. This field stays
+  // mounted in the tree but renders nothing, so tearing the 3D scene
+  // down brings it straight back with no flash of empty sky.
+  const sceneActive = useSceneActive();
+
   useEffect(() => {
+    if (sceneActive) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d", { alpha: true });
@@ -153,7 +160,9 @@ export function StarField() {
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("pointermove", onPointerMove);
     };
-  }, [reduced, tier]);
+  }, [reduced, tier, sceneActive]);
+
+  if (sceneActive) return null;
 
   return (
     <canvas
