@@ -3,23 +3,19 @@
 import { Canvas } from "@react-three/fiber";
 import { useEffect, useState } from "react";
 import { BlackHoles } from "@/components/three/scenes/BlackHoles";
+import { Earth } from "@/components/three/scenes/Earth";
+import { Future } from "@/components/three/scenes/Future";
 import { Galaxy } from "@/components/three/scenes/Galaxy";
+import { Home } from "@/components/three/scenes/Home";
 import { SolarSystem } from "@/components/three/scenes/SolarSystem";
+import { Story } from "@/components/three/scenes/Story";
+import { Time } from "@/components/three/scenes/Time";
 import { CameraRig } from "@/components/three/shared/CameraRig";
 import { Region } from "@/components/three/shared/Region";
-import { RegionMarkers } from "@/components/three/shared/RegionMarkers";
 import { Starfield } from "@/components/three/shared/Starfield";
-import type { DestinationId } from "@/content/schema";
 import { sceneBudget, type SceneTier } from "@/lib/performance/useSceneTier";
 import { setSceneActive } from "@/lib/scene/sceneState";
 import { poses } from "@/lib/physics/space";
-
-/**
- * The regions that have real geometry. The other five still get a
- * scaffold marker, so every anchor remains a place you can arrive at.
- * Phase 9B empties this list by filling it.
- */
-const BUILT: DestinationId[] = ["solar-system", "galaxy", "black-holes"];
 
 /**
  * The WebGL world. Mounted once, never unmounted.
@@ -82,8 +78,19 @@ export function Scene({ tier }: { tier: Exclude<SceneTier, "off"> }) {
       >
         <CameraRig parallax={tier === "full"} />
         <Starfield count={budget.stars} />
-        <RegionMarkers skip={BUILT} />
 
+        {/* Eight regions, in the order the site travels through them.
+            Every anchor now holds the record rather than a marker, which
+            is what let the Phase 7 scaffold go. */}
+        <Region id="home">
+          <Home />
+        </Region>
+        <Region id="time">
+          <Time />
+        </Region>
+        <Region id="earth">
+          <Earth />
+        </Region>
         <Region id="solar-system">
           <SolarSystem />
         </Region>
@@ -92,6 +99,12 @@ export function Scene({ tier }: { tier: Exclude<SceneTier, "off"> }) {
         </Region>
         <Region id="black-holes">
           <BlackHoles disk={budget.disk} />
+        </Region>
+        <Region id="future">
+          <Future />
+        </Region>
+        <Region id="story">
+          <Story />
         </Region>
       </Canvas>
     </div>

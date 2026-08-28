@@ -1,7 +1,17 @@
-import { projectsOrdered, skillGroups, getProject } from "@/content";
-import { toMonthIndex } from "@/lib/format/timeline";
+import {
+  certifications,
+  destinations,
+  education,
+  experience,
+  getProject,
+  isKnown,
+  projectsOrdered,
+  skillGroups,
+  storySegments,
+} from "@/content";
+import { AXIS_MONTHS, toMonthIndex } from "@/lib/format/timeline";
 import { seeded } from "@/lib/physics/random";
-import type { Vec3 } from "@/lib/physics/space";
+import { anchors, type Vec3 } from "@/lib/physics/space";
 
 /**
  * The record, as geometry.
@@ -240,3 +250,216 @@ export const blackHoles: DiskBand[] = (() => {
 /** Where the disk ends, so the scene can size its glow against it. */
 export const DISK_OUTER =
   blackHoles.length > 0 ? blackHoles[blackHoles.length - 1].outer : VOID_RADIUS;
+
+/* ============================================================
+   HOME -- seven bearings out of the origin
+   ============================================================ */
+
+export type Bearing = {
+  id: string;
+  /** Unit direction from the origin toward that region's anchor. */
+  direction: Vec3;
+  /** How far the thread reaches before it fades. */
+  reach: number;
+};
+
+const HOME_REACH_MIN = 7;
+const HOME_REACH_MAX = 15;
+
+/**
+ * "Everything is reachable from anywhere. Nothing is locked, and no order
+ * is required." -- the home page says exactly that, so the geometry says
+ * it too: a short thread pointing at the true bearing of every other
+ * region, from the one place in the world where all of them are ahead of
+ * you.
+ *
+ * The directions are not decorative. They are the real normalised vectors
+ * to the real anchors, so the thread that points at Future is genuinely
+ * pointing at Future, 862 units away.
+ */
+export const home: Bearing[] = destinations
+  .filter((destination) => destination.id !== "home")
+  .map((destination, i) => {
+    const target = anchors[destination.id];
+    const length = Math.hypot(target[0], target[1], target[2]) || 1;
+    // Nearer regions get shorter threads, so the spray has depth rather
+    // than reading as a flat asterisk.
+    const reach =
+      HOME_REACH_MIN +
+      (i / Math.max(1, destinations.length - 2)) * (HOME_REACH_MAX - HOME_REACH_MIN);
+    return {
+      id: destination.id,
+      direction: [
+        target[0] / length,
+        target[1] / length,
+        target[2] / length,
+      ] as Vec3,
+      reach,
+    };
+  });
+
+/* ============================================================
+   TIME -- 48 months, seven tracks
+   ============================================================ */
+
+export type Track = {
+  id: string;
+  kind: "education" | "internship" | "build";
+  /** World X of each end of the bar. */
+  fromX: number;
+  toX: number;
+  /** World Y of the row. */
+  y: number;
+};
+
+/** Total width of the axis in world units. */
+export const AXIS_WIDTH = 46;
+const ROW_GAP = 1.5;
+
+/** Month index -> world X, the 3D twin of toPercent(). */
+export function monthToX(monthIndex: number): number {
+  return (monthIndex / (AXIS_MONTHS - 1) - 0.5) * AXIS_WIDTH;
+}
+
+/**
+ * The same seven tracks /time draws, on the same 48-month axis, read
+ * through the same toMonthIndex -- including its rule that a year-only
+ * value ends in December. The degree is therefore one long bar with every
+ * build clustered into the final stretch of it, which is the shape the
+ * scrubber exists to reveal.
+ *
+ * Assembled here rather than imported from the page because a scene must
+ * not depend on a route module; the derivation is the same three sources
+ * in the same order.
+ */
+export const time: Track[] = (() => {
+  const rows: { id: string; kind: Track["kind"]; start: string; end: string }[] = [
+    {
+      id: "education",
+      kind: "education",
+      start: education.dates.start,
+      end: education.dates.end ?? education.dates.start,
+    },
+    ...experience.map((role) => ({
+      id: "role-" + role.organisation,
+      kind: "internship" as const,
+      start: role.dates.start,
+      end: role.dates.end ?? role.dates.start,
+    })),
+    ...projectsOrdered.map((project) => ({
+      id: project.slug,
+      kind: "build" as const,
+      start: project.dates.start,
+      end: project.dates.end ?? project.dates.start,
+    })),
+  ];
+
+  const middle = (rows.length - 1) / 2;
+
+  return rows.map((row, i) => {
+    const fromX = monthToX(toMonthIndex(row.start, "start"));
+    const toX = monthToX(toMonthIndex(row.end, "end"));
+    return {
+      id: row.id,
+      kind: row.kind,
+      fromX,
+      // A single-month build would be a zero-length line and draw
+      // nothing, so it keeps a minimum extent -- the same reason the 2D
+      // bars have a 1.4% floor.
+      toX: Math.max(toX, fromX + 0.5),
+      y: (middle - i) * ROW_GAP,
+    };
+  });
+})();
+
+/* ============================================================
+   EARTH -- one move, three subjects
+   ============================================================ */
+
+export type Subject = {
+  id: string;
+  /** Things studied. */
+  studies: number;
+  /** Things built. Cloud has none, and that has to show. */
+  builds: number;
+  position: Vec3;
+};
+
+/** Kasaragod and Bangalore, as two points and the line between them. */
+export const move: { from: Vec3; to: Vec3 } = {
+  from: [-9, -1.5, 4],
+  to: [9, 1.5, -4],
+};
+
+/**
+ * The three major subjects, counted exactly as /earth counts them:
+ * Cloud is the degree specialisation and has coursework and a
+ * certification but NO project, while Blockchain and AI each have one
+ * build. Nothing is invented to balance the three, so in the world the
+ * specialisation is visibly the one with nothing orbiting it.
+ */
+export const earth: Subject[] = (() => {
+  const cloudSkills = skillGroups.find((g) => g.id === "cloud");
+  const cloudCert = certifications.find((c) => c.title === "Cloud Computing");
+
+  const rows = [
+    {
+      id: "cloud",
+      studies: (cloudSkills?.items.length ?? 0) + (cloudCert ? 1 : 0),
+      builds: 0,
+    },
+    { id: "blockchain", studies: 0, builds: getProject("dvoting") ? 1 : 0 },
+    { id: "ai", studies: 0, builds: getProject("ai-chatbot") ? 1 : 0 },
+  ];
+
+  return rows.map((row, i) => ({
+    ...row,
+    position: [(i - 1) * 8.5, 6.5, -2] as Vec3,
+  }));
+})();
+
+/* ============================================================
+   STORY -- seven vertebrae, one of them hollow
+   ============================================================ */
+
+export type Vertebra = {
+  id: string;
+  y: number;
+  /** False for `challenges`, whose body is UNKNOWN. */
+  written: boolean;
+  /** Builds named by this segment -- five, on `experiments`. */
+  projects: number;
+};
+
+const SPINE_GAP = 4.2;
+
+/**
+ * The spine mirrors the 2D timeline on /story: seven segments top to
+ * bottom, and the Challenges vertebra is empty because its body is
+ * UNKNOWN and will stay that way until Abhay writes it.
+ *
+ * It renders as a gap in the spine rather than a placeholder. The page
+ * makes the same choice -- it returns null for that segment -- because an
+ * honest absence reads better than a "coming soon", and inventing a
+ * struggle would be the worst thing this site could do.
+ */
+export const story: Vertebra[] = storySegments.map((segment, i) => ({
+  id: segment.id,
+  y: ((storySegments.length - 1) / 2 - i) * SPINE_GAP,
+  written: isKnown(segment.body),
+  projects: segment.projects?.length ?? 0,
+}));
+
+/* ============================================================
+   FUTURE -- deliberately almost nothing
+   ============================================================ */
+
+/**
+ * "This page is intentionally unfinished."
+ *
+ * /future is the sparsest page on the site, and whitespace is doing the
+ * work there. The scene does the same: a single unresolved point and a
+ * great deal of empty space. Filling this region would contradict the one
+ * thing it is trying to say.
+ */
+export const FUTURE_MARKER_RADIUS = 0.8;
