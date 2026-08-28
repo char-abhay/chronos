@@ -37,6 +37,18 @@
   --atmo-mid:       rgb(184 180 172 / 0.06);
   --atmo-near:      rgb(227 168 87 / 0.05);
 
+  /* --- SCENE: the WebGL layer's per-region hue ---
+     Opaque on purpose. The atmosphere tokens above carry alpha in
+     `rgb(r g b / a)` form, which three.Color does not parse, and they are
+     re-declared per [data-destination] -- but every region's geometry is
+     mounted at once in one world, so a scene reading a destination-scoped
+     token would get whichever region happened to be active at the time.
+     These are the same hues, stated once, globally, in a form a material
+     can actually use. */
+  --scene-solar-system: #ce9a58;
+  --scene-galaxy:       #a096b2;
+  --scene-black-holes:  #ff8a3c;
+
   /* --- BORDERS: hairlines only, the primary structural device --- */
   --hairline:       rgb(242 240 236 / 0.08);
   --hairline-strong:rgb(242 240 236 / 0.14);

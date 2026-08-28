@@ -71,8 +71,16 @@ export function useSceneTier(): SceneTier {
 /**
  * Instance budgets per tier. Same intent as `starCount` in
  * useDeviceTier: smooth interaction beats maximum fidelity.
+ *
+ * `dust` and `disk` scale the generated fields in the region scenes. The
+ * counts that come from the record itself -- five builds, six clusters,
+ * twenty skills, four challenge bands -- are NEVER scaled by tier. A
+ * weaker device sees a thinner world, never a less complete one.
  */
-export const sceneBudget: Record<Exclude<SceneTier, "off">, { stars: number; dpr: number }> = {
-  full: { stars: 6000, dpr: 2 },
-  lean: { stars: 2200, dpr: 1.5 },
+export const sceneBudget: Record<
+  Exclude<SceneTier, "off">,
+  { stars: number; dpr: number; dust: number; disk: number }
+> = {
+  full: { stars: 6000, dpr: 2, dust: 2400, disk: 1 },
+  lean: { stars: 2200, dpr: 1.5, dust: 820, disk: 0.34 },
 };

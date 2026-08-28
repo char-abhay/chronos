@@ -2,12 +2,24 @@
 
 import { Canvas } from "@react-three/fiber";
 import { useEffect, useState } from "react";
+import { BlackHoles } from "@/components/three/scenes/BlackHoles";
+import { Galaxy } from "@/components/three/scenes/Galaxy";
+import { SolarSystem } from "@/components/three/scenes/SolarSystem";
 import { CameraRig } from "@/components/three/shared/CameraRig";
+import { Region } from "@/components/three/shared/Region";
 import { RegionMarkers } from "@/components/three/shared/RegionMarkers";
 import { Starfield } from "@/components/three/shared/Starfield";
+import type { DestinationId } from "@/content/schema";
 import { sceneBudget, type SceneTier } from "@/lib/performance/useSceneTier";
 import { setSceneActive } from "@/lib/scene/sceneState";
 import { poses } from "@/lib/physics/space";
+
+/**
+ * The regions that have real geometry. The other five still get a
+ * scaffold marker, so every anchor remains a place you can arrive at.
+ * Phase 9B empties this list by filling it.
+ */
+const BUILT: DestinationId[] = ["solar-system", "galaxy", "black-holes"];
 
 /**
  * The WebGL world. Mounted once, never unmounted.
@@ -70,7 +82,17 @@ export function Scene({ tier }: { tier: Exclude<SceneTier, "off"> }) {
       >
         <CameraRig parallax={tier === "full"} />
         <Starfield count={budget.stars} />
-        <RegionMarkers />
+        <RegionMarkers skip={BUILT} />
+
+        <Region id="solar-system">
+          <SolarSystem />
+        </Region>
+        <Region id="galaxy">
+          <Galaxy dust={budget.dust} />
+        </Region>
+        <Region id="black-holes">
+          <BlackHoles disk={budget.disk} />
+        </Region>
       </Canvas>
     </div>
   );

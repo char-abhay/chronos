@@ -8,21 +8,26 @@ import {
   Color,
   PointsMaterial,
 } from "three";
-import { anchors } from "@/lib/physics/space";
+import type { DestinationId } from "@/content/schema";
+import { anchors, type Vec3 } from "@/lib/physics/space";
 import { readToken } from "@/lib/scene/tokens";
 
 /**
- * A faint light at each region anchor.
+ * A faint light at each region anchor that has no scene yet.
  *
- * PHASE 7 SCAFFOLD. This exists so the world has landmarks while the
- * camera system is being built -- it is what proves a route change is
- * moving through space rather than cutting. Phase 9 replaces it with the
- * real per-region geometry (the five builds, the six skill clusters, the
- * accretion disk), at which point this component goes away.
+ * PHASE 7 SCAFFOLD, now retreating. It existed so the world had landmarks
+ * while the camera system was being built -- it is what proved a route
+ * change moves through space rather than cutting. Phase 9A replaced three
+ * of the eight anchors with real geometry (the five builds, the six skill
+ * clusters, the accretion disk) and passes those three in `skip`, so the
+ * remaining five keep a landmark and the world stays navigable. When
+ * Phase 9B builds the last five, this component goes away entirely.
  */
-export function RegionMarkers() {
+export function RegionMarkers({ skip = [] }: { skip?: DestinationId[] }) {
   const geometry = useMemo(() => {
-    const points = Object.values(anchors);
+    const points = (Object.entries(anchors) as [DestinationId, Vec3][])
+      .filter(([id]) => !skip.includes(id))
+      .map(([, anchor]) => anchor);
     const positions = new Float32Array(points.length * 3);
     points.forEach((anchor, i) => {
       positions[i * 3] = anchor[0];
@@ -32,7 +37,9 @@ export function RegionMarkers() {
     const geo = new BufferGeometry();
     geo.setAttribute("position", new BufferAttribute(positions, 3));
     return geo;
-  }, []);
+    // `skip` is a literal in Scene.tsx and never changes at runtime, but
+    // the field is rebuilt if it ever does.
+  }, [skip]);
 
   const material = useMemo(
     () =>
