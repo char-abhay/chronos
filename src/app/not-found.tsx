@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { ButtonLink } from "@/components/ui/Button";
 import { Stamp } from "@/components/ui/Stamp";
@@ -44,7 +45,7 @@ export default function NotFound() {
         <ol className="mt-4 border-t border-hairline">
           {destinations.map((d) => (
             <li key={d.id}>
-              <a
+              <Link
                 href={d.href}
                 className="group flex items-baseline gap-4 border-b border-hairline py-3 transition-colors dur-micro hover:bg-ground-raised"
               >
@@ -54,7 +55,7 @@ export default function NotFound() {
                 <span className="font-display text-primary transition-colors dur-micro group-hover:text-signal">
                   {d.name}
                 </span>
-              </a>
+              </Link>
             </li>
           ))}
         </ol>

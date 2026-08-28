@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { InView } from "@/components/motion/InView";
 import { Arrival } from "@/components/sections/Arrival";
@@ -63,12 +64,12 @@ export default function SystemsPage() {
                   </ul>
 
                   <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-body-sm">
-                    <a
+                    <Link
                       href={"/projects/" + project.slug}
                       className="text-signal underline underline-offset-4 decoration-hairline hover:decoration-signal"
                     >
                       Full build →
-                    </a>
+                    </Link>
                     {project.links.map((link) => (
                       <ExternalLink key={link.href} href={link.href}>
                         {link.label}

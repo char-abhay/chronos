@@ -34,7 +34,7 @@ const textLevels = [
 
 export default function StyleGuide() {
   return (
-    <main className="py-16">
+    <div className="py-16">
       <Container>
         <Stamp>CHRONOS · design system · phase 2</Stamp>
         <h1 className="mt-6 font-display text-display-lg leading-display tracking-display text-primary">
@@ -284,6 +284,6 @@ export default function StyleGuide() {
           </p>
         </Section>
       </Container>
-    </main>
+    </div>
   );
 }

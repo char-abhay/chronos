@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { InView } from "@/components/motion/InView";
 import { Departure } from "@/components/sections/Departure";
@@ -119,12 +120,12 @@ export default function Home() {
           </InView>
           <InView delay={240}>
             <p className="mt-6">
-              <a
+              <Link
                 href={"/projects/" + featured.slug}
                 className="text-signal underline underline-offset-[6px] decoration-hairline transition-colors dur-micro hover:decoration-signal"
               >
                 Open the build →
-              </a>
+              </Link>
             </p>
           </InView>
         </Container>
@@ -146,7 +147,7 @@ export default function Home() {
           {destinations.slice(1).map((destination, i) => (
             <li key={destination.id}>
               <InView delay={i * 60}>
-                <a
+                <Link
                   href={destination.href}
                   className="group flex items-baseline gap-5 border-b border-hairline py-5 transition-colors dur-micro hover:bg-ground-raised"
                 >
@@ -164,7 +165,7 @@ export default function Home() {
                   <span className="hidden font-mono text-label text-faint tabular sm:block">
                     {destination.scale}
                   </span>
-                </a>
+                </Link>
               </InView>
             </li>
           ))}

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { InView } from "@/components/motion/InView";
 import { Arrival } from "@/components/sections/Arrival";
@@ -119,12 +120,12 @@ export default function TimePage() {
                             ))}
                           </div>
                           <p className="mt-4 text-body-sm">
-                            <a
+                            <Link
                               href={"/projects/" + project.slug}
                               className="text-signal underline underline-offset-4 decoration-hairline hover:decoration-signal"
                             >
                               Open the full build →
-                            </a>
+                            </Link>
                           </p>
                         </>
                       ) : null}
