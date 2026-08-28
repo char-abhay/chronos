@@ -8,6 +8,7 @@ import { Vector3, type PerspectiveCamera } from "three";
 import type { DestinationId } from "@/content/schema";
 import { MAX_TRAVERSAL, anchors, distance, poses } from "@/lib/physics/space";
 import { onCameraRequest } from "@/lib/scene/cameraBus";
+import { getSceneProgress } from "@/lib/scene/progress";
 import { destinationIdForPath } from "@/lib/scene/route";
 
 /**
@@ -57,6 +58,12 @@ export function CameraRig({ parallax }: { parallax: boolean }) {
 
   const lookAt = useRef(new Vector3());
   const pointer = useRef({ x: 0, y: 0, ax: 0, ay: 0 });
+
+  // Damped copy of the scroll position. Lenis already smooths scrolling,
+  // but this value is also reset to 0 the instant a route changes, and
+  // easing toward it turns what would be a visible snap into part of the
+  // traversal.
+  const scroll = useRef(0);
 
   const flyTo = useCallback((id: DestinationId) => {
     if (current.current === id) return;
@@ -112,10 +119,16 @@ export function CameraRig({ parallax }: { parallax: boolean }) {
     p.ax += (p.x - p.ax) * 0.045;
     p.ay += (p.y - p.ay) * 0.045;
 
+    // Reading down a region draws the camera toward what it is framing.
+    // A fraction of the way only -- arriving at the subject would leave
+    // nowhere to go, and the approach is the part that reads as motion.
+    scroll.current += (getSceneProgress() - scroll.current) * 0.06;
+    const advance = scroll.current * 0.22;
+
     camera.position.set(
-      state.px + p.ax * -2.6,
-      state.py + p.ay * -1.8,
-      state.pz
+      state.px + (state.tx - state.px) * advance + p.ax * -2.6,
+      state.py + (state.ty - state.py) * advance + p.ay * -1.8,
+      state.pz + (state.tz - state.pz) * advance
     );
     lookAt.current.set(state.tx, state.ty, state.tz);
     camera.lookAt(lookAt.current);

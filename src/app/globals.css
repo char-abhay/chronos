@@ -98,6 +98,18 @@ body {
   }
 }
 
+/* Lenis requires these to hand scroll height back to the document.
+   Written out rather than imported from node_modules so the whole
+   stylesheet stays readable in one file. The classes are added and
+   removed by ScrollProvider, so none of this applies under reduced
+   motion -- scrolling is untouched and native there. */
+html.lenis,
+html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+.lenis.lenis-smooth iframe { pointer-events: none; }
+
 /* Motion durations as utilities, so components reference the tokens
    instead of hardcoding numbers that drift out of sync. */
 @utility dur-micro { transition-duration: var(--dur-micro); }

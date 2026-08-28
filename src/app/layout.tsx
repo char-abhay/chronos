@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Instrument_Sans, Inter, JetBrains_Mono } from "next/font/google";
 import { Atmosphere } from "@/components/atmosphere/Atmosphere";
+import { ScrollProvider } from "@/components/motion/ScrollProvider";
 import { SceneRoot } from "@/components/three/SceneRoot";
 import { Footer } from "@/components/layout/Footer";
 import { Chrome } from "@/components/navigation/Chrome";
@@ -77,6 +78,10 @@ export default function RootLayout({
         className={`${instrumentSans.variable} ${inter.variable} ${jetbrainsMono.variable}`}
       >
         <SkipLink />
+
+        {/* Smooth scroll and the scroll-to-camera link. Renders nothing,
+            and loads nothing at all under reduced motion. */}
+        <ScrollProvider />
 
         {/* Persistent across every route: never unmounts, so moving
             between regions shifts hue rather than flashing black. */}
