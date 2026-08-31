@@ -81,6 +81,13 @@ export type Education = {
   location: string;
   dates: DateSpan;
   majorSubjects: string[];
+  /**
+   * Which of `majorSubjects` the degree specialised in. Must be one of
+   * them -- subjects.ts throws at build time if it is not, because a
+   * typo here would quietly un-mark the specialisation everywhere and
+   * still produce a green build.
+   */
+  specialisation: string;
   graduationMonth: Known<string>;
 };
 
@@ -178,6 +185,19 @@ export type Project = {
   challenges?: ProjectChallenge[];
   /** Shown as a caution in dev when a name could imply more than it does. */
   clarification?: string;
+  /**
+   * Which of education.majorSubjects this build came out of, if any.
+   *
+   * Absent is meaningful and common -- three of the five builds are IoT,
+   * web and authentication work that sit under none of the three major
+   * subjects, and inventing a home for them would flatten a real shape.
+   *
+   * This cannot be derived from `technologies`: dVoting's list says
+   * Solidity and Smart contracts, never the word "Blockchain". Matching
+   * on substrings would be a guess that mis-files work silently as the
+   * dataset grows, so the relationship is stated instead.
+   */
+  subjects?: string[];
 };
 
 /* --- Destinations --- */

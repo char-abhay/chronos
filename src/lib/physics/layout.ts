@@ -1,5 +1,4 @@
 import {
-  certifications,
   destinations,
   education,
   experience,
@@ -8,6 +7,7 @@ import {
   projectsOrdered,
   skillGroups,
   storySegments,
+  subjects,
 } from "@/content";
 import { AXIS_MONTHS, toMonthIndex } from "@/lib/format/timeline";
 import { seeded } from "@/lib/physics/random";
@@ -392,31 +392,24 @@ export const move: { from: Vec3; to: Vec3 } = {
 };
 
 /**
- * The three major subjects, counted exactly as /earth counts them:
- * Cloud is the degree specialisation and has coursework and a
- * certification but NO project, while Blockchain and AI each have one
- * build. Nothing is invented to balance the three, so in the world the
- * specialisation is visibly the one with nothing orbiting it.
+ * The three major subjects, counted from the same resolved record /earth
+ * reads, so the page and the world can never disagree.
+ *
+ * As the data stands, Cloud is the degree specialisation and has
+ * coursework and a certification but NO project, while Blockchain and AI
+ * each have one build -- so the specialisation is visibly the subject
+ * with nothing orbiting it. That asymmetry is read, not asserted: the
+ * day a cloud project is added to the record, this picks it up and the
+ * scene changes on its own.
  */
-export const earth: Subject[] = (() => {
-  const cloudSkills = skillGroups.find((g) => g.id === "cloud");
-  const cloudCert = certifications.find((c) => c.title === "Cloud Computing");
-
-  const rows = [
-    {
-      id: "cloud",
-      studies: (cloudSkills?.items.length ?? 0) + (cloudCert ? 1 : 0),
-      builds: 0,
-    },
-    { id: "blockchain", studies: 0, builds: getProject("dvoting") ? 1 : 0 },
-    { id: "ai", studies: 0, builds: getProject("ai-chatbot") ? 1 : 0 },
-  ];
-
-  return rows.map((row, i) => ({
-    ...row,
-    position: [(i - 1) * 8.5, 6.5, -2] as Vec3,
-  }));
-})();
+export const earth: Subject[] = subjects.map((subject, i) => ({
+  id: subject.id,
+  studies: subject.studies.length,
+  builds: subject.builds.length,
+  // Centred on the row rather than pinned to a literal middle index, so
+  // a fourth subject would widen the row instead of skewing it.
+  position: [(i - (subjects.length - 1) / 2) * 8.5, 6.5, -2] as Vec3,
+}));
 
 /* ============================================================
    STORY -- seven vertebrae, one of them hollow

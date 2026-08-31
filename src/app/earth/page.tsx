@@ -13,10 +13,10 @@ import { getDestination } from "@/content/destinations";
 import {
   certifications,
   education,
-  getProject,
   isKnown,
   profile,
   skillGroups,
+  subjects,
 } from "@/content";
 
 const destination = getDestination("earth")!;
@@ -28,72 +28,39 @@ export const metadata: Metadata = {
 };
 
 /**
- * Each subject maps only to what the data actually supports:
- *   Blockchain -> dVoting            (its own technology list)
- *   AI         -> AI Chatbot         (its own technology list)
- *   Cloud      -> coursework + cert  (no project exists yet)
- * Nothing is invented to make the three look balanced.
+ * The three subjects, straight off the resolved record.
+ *
+ * This used to reach for getProject("dvoting") and getProject(
+ * "ai-chatbot") by name and pin Cloud's build count to zero, which meant
+ * the page could only ever tell one story -- the one true on the day it
+ * was written. Now the relationship lives in the content layer, so a
+ * cloud project appearing in the record appears here too, with no code
+ * change. Nothing is invented to make the three look balanced; if they
+ * are lopsided, that is what the data says.
  */
 function buildSubjects(): Subject[] {
-  const cloudSkills = skillGroups.find((g) => g.id === "cloud");
-  const cloudCert = certifications.find((c) => c.title === "Cloud Computing");
-  const dvoting = getProject("dvoting");
-  const chatbot = getProject("ai-chatbot");
-
-  return [
-    {
-      id: "cloud",
-      name: "Cloud Computing",
-      specialisation: true,
-      outcomes: [
-        ...(cloudSkills
-          ? cloudSkills.items.map((item) => ({
-              kind: "study" as const,
-              label: item,
-            }))
-          : []),
-        ...(cloudCert
-          ? [
-              {
-                kind: "study" as const,
-                label: cloudCert.title,
-                meta:
-                  (isKnown(cloudCert.provider) ? cloudCert.provider + " · " : "") +
-                  cloudCert.format,
-              },
-            ]
-          : []),
-      ],
-    },
-    {
-      id: "blockchain",
-      name: "Blockchain",
-      outcomes: dvoting
-        ? [
-            {
-              kind: "build" as const,
-              label: dvoting.name,
-              meta: dvoting.dates.label + " · " + dvoting.technologies.join(" · "),
-              href: "/projects/" + dvoting.slug,
-            },
-          ]
-        : [],
-    },
-    {
-      id: "ai",
-      name: "Artificial Intelligence",
-      outcomes: chatbot
-        ? [
-            {
-              kind: "build" as const,
-              label: chatbot.name,
-              meta: chatbot.dates.label + " · " + chatbot.technologies.join(" · "),
-              href: "/projects/" + chatbot.slug,
-            },
-          ]
-        : [],
-    },
-  ];
+  return subjects.map((subject) => ({
+    id: subject.id,
+    name: subject.name,
+    specialisation: subject.specialisation,
+    outcomes: [
+      ...subject.studies.map((study) => ({
+        kind: "study" as const,
+        label: study.label,
+        // Spread rather than assign: `meta: undefined` is not the same
+        // as no key at all once React serialises this to the client --
+        // it ships "$undefined" for every coursework item that has no
+        // provider. Absence should cost nothing.
+        ...(study.meta ? { meta: study.meta } : {}),
+      })),
+      ...subject.builds.map((project) => ({
+        kind: "build" as const,
+        label: project.name,
+        meta: project.dates.label + " · " + project.technologies.join(" · "),
+        href: "/projects/" + project.slug,
+      })),
+    ],
+  }));
 }
 
 export default function EarthPage() {

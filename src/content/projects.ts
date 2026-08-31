@@ -77,6 +77,7 @@ export const projects: Project[] = [
     context: "academic",
     dates: { start: "2026-01", end: "2026-03", label: "January – March 2026" },
     featured: true,
+    subjects: ["Blockchain"],
     what:
       "A decentralized voting application built on Ethereum's Sepolia Testnet, where the vote record lives on-chain rather than in a database controlled by one party.",
     why:
@@ -142,6 +143,7 @@ export const projects: Project[] = [
     name: "AI Chatbot",
     context: "academic",
     dates: { start: "2026-05", end: "2026-05", label: "May 2026" },
+    subjects: ["Artificial Intelligence"],
     what:
       "A chatbot that interprets user queries and responds conversationally, built around natural language processing techniques.",
     why:
