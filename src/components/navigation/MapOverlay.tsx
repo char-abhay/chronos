@@ -114,7 +114,7 @@ export function MapOverlay({ onNavigate }: { onNavigate: () => void }) {
                 <span
                   className={cn(
                     "font-mono text-label tabular",
-                    active ? "text-signal" : "text-faint"
+                    active ? "text-signal" : "text-muted"
                   )}
                 >
                   {d.index}
@@ -132,7 +132,7 @@ export function MapOverlay({ onNavigate }: { onNavigate: () => void }) {
                     {d.hook}
                   </span>
                 </span>
-                <span className="font-mono text-label text-faint tabular">
+                <span className="font-mono text-label text-muted tabular">
                   {d.scale}
                 </span>
               </Link>

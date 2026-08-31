@@ -7,6 +7,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Chrome } from "@/components/navigation/Chrome";
 import { SkipLink } from "@/components/navigation/SkipLink";
 import { ProfileContent } from "@/components/portfolio/ProfileContent";
+import { siteUrl } from "@/lib/site";
 import "./globals.css";
 
 /* Three roles, three families (plan F.2).
@@ -30,10 +31,6 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-/* TODO(Phase 10): replace with the real custom domain once chosen.
-   Deliberately not invented — see plan L.4. */
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
@@ -52,6 +49,9 @@ export const metadata: Metadata = {
     description:
       "A journey through space and time that happens to be a developer portfolio.",
   },
+  /* X falls back to og:image, so the single opengraph-image.tsx covers
+     both cards and no separate twitter-image route is needed. */
+  twitter: { card: "summary_large_image" },
   robots: { index: true, follow: true },
 };
 

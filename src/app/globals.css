@@ -147,6 +147,13 @@ html.lenis body { height: auto; }
   a { text-decoration: none !important; color: #000 !important; }
   /* Print the destination of a link, since it cannot be clicked. */
   a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.8em; }
-  details { open: true; }
+  /* `open` is an HTML attribute, not a CSS property -- the declaration
+     that used to be here was dropped by every engine, so a collapsed
+     <details> printed as nothing while the rule below hid its summary
+     too. A printed page silently lost content. These force the content
+     box open for real: ::details-content is the supported mechanism,
+     and the sibling rule covers engines that predate it. */
+  details::details-content { content-visibility: visible; block-size: auto; }
+  details:not([open]) > *:not(summary) { display: block; }
   details > summary { display: none; }
 }

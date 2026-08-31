@@ -201,7 +201,7 @@ export default function EarthPage() {
                     {isKnown(cert.provider) ? (
                       <span className="text-muted"> — {cert.provider}</span>
                     ) : null}
-                    <span className="ms-2 font-mono text-label text-faint">
+                    <span className="ms-2 font-mono text-label text-muted">
                       {cert.format}
                     </span>
                   </li>

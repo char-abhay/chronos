@@ -26,6 +26,11 @@ export type Subject = {
  * produced coursework and a certification but no project yet. Rather
  * than hide that behind an empty state, the cluster shows the real
  * study that exists. Nothing is invented to balance the three.
+ *
+ * The announcement is one sentence in a visually-hidden live region, not
+ * the whole plate. Marking the plate itself live meant picking a subject
+ * re-read every heading, link and meta line in it; the summary says what
+ * changed and leaves the detail to be read at the user's own pace.
  */
 export function SubjectTrace({ subjects }: { subjects: Subject[] }) {
   const [active, setActive] = useState<string>(subjects[0]?.id ?? "");
@@ -55,7 +60,7 @@ export function SubjectTrace({ subjects }: { subjects: Subject[] }) {
                   <span
                     className={cn(
                       "font-mono text-label uppercase tracking-label",
-                      isActive ? "text-signal" : "text-faint"
+                      isActive ? "text-signal" : "text-muted"
                     )}
                   >
                     spec.
@@ -67,23 +72,28 @@ export function SubjectTrace({ subjects }: { subjects: Subject[] }) {
         })}
       </ul>
 
-      <div
-        aria-live="polite"
-        className="min-h-40 rounded-[2px] border border-hairline bg-ground-raised p-6"
-      >
+      <p className="sr-only" aria-live="polite">
+        {current
+          ? current.name +
+            ": " +
+            current.outcomes.map((outcome) => outcome.label).join(", ")
+          : ""}
+      </p>
+
+      <div className="min-h-40 rounded-[2px] border border-hairline bg-ground-raised p-6">
         {current ? (
           <>
             <p className="font-mono text-label uppercase tracking-label text-data">
               {current.name}
               {current.specialisation ? (
-                <span className="ms-3 text-faint">degree specialisation</span>
+                <span className="ms-3 text-muted">degree specialisation</span>
               ) : null}
             </p>
 
             <ul className="mt-5 flex flex-col gap-4">
               {current.outcomes.map((outcome) => (
                 <li key={outcome.label}>
-                  <p className="font-mono text-label uppercase tracking-label text-faint">
+                  <p className="font-mono text-label uppercase tracking-label text-muted">
                     {outcome.kind === "build" ? "Became" : "Studied"}
                   </p>
                   {outcome.href ? (

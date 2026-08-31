@@ -50,13 +50,13 @@ export default function Home() {
             <p className="text-secondary">
               {education.qualification} · {education.institution},{" "}
               {education.location}{" "}
-              <span className="font-mono text-label text-faint tabular">
+              <span className="font-mono text-label text-muted tabular">
                 {education.dates.label}
               </span>
             </p>
             <p className="text-secondary">
               {role.role} · {role.organisation}{" "}
-              <span className="font-mono text-label text-faint tabular">
+              <span className="font-mono text-label text-muted tabular">
                 {role.dates.label}
               </span>
             </p>
@@ -151,7 +151,7 @@ export default function Home() {
                   href={destination.href}
                   className="group flex items-baseline gap-5 border-b border-hairline py-5 transition-colors dur-micro hover:bg-ground-raised"
                 >
-                  <span className="font-mono text-label text-faint tabular">
+                  <span className="font-mono text-label text-muted tabular">
                     {destination.index}
                   </span>
                   <span className="flex-1">
@@ -162,7 +162,7 @@ export default function Home() {
                       {destination.hook}
                     </span>
                   </span>
-                  <span className="hidden font-mono text-label text-faint tabular sm:block">
+                  <span className="hidden font-mono text-label text-muted tabular sm:block">
                     {destination.scale}
                   </span>
                 </Link>

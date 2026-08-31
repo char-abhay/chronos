@@ -49,7 +49,7 @@ export default function NotFound() {
                 href={d.href}
                 className="group flex items-baseline gap-4 border-b border-hairline py-3 transition-colors dur-micro hover:bg-ground-raised"
               >
-                <span className="font-mono text-label text-faint tabular">
+                <span className="font-mono text-label text-muted tabular">
                   {d.index}
                 </span>
                 <span className="font-display text-primary transition-colors dur-micro group-hover:text-signal">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useId } from "react";
 import { useEscapeKey } from "@/lib/a11y/useEscapeKey";
 import { useFocusTrap } from "@/lib/a11y/useFocusTrap";
 import { cn } from "@/lib/cn";
@@ -34,6 +34,12 @@ export function Panel({
   const ref = useFocusTrap<HTMLDivElement>(open);
   useEscapeKey(open, onClose);
 
+  /* Chrome mounts three of these, driven by three independent booleans.
+     A shared literal id would collide the moment two were open at once
+     and silently break aria-labelledby for both. Must be called before
+     the early return below, so it cannot sit next to its own usage. */
+  const titleId = useId();
+
   // Lock background scroll while the panel is open.
   useEffect(() => {
     if (!open) return;
@@ -45,8 +51,6 @@ export function Panel({
   }, [open]);
 
   if (!open) return null;
-
-  const titleId = "panel-title";
 
   return (
     <div className="fixed inset-0 z-50">

@@ -178,7 +178,7 @@ export function ProfileContent({
               <dt className="text-body-sm text-muted">
                 {group.label}
                 {group.note ? (
-                  <span className="ms-2 font-mono text-label text-faint">
+                  <span className="ms-2 font-mono text-label text-muted">
                     {group.note}
                   </span>
                 ) : null}
@@ -204,7 +204,7 @@ export function ProfileContent({
                 >
                   {project.name}
                 </Link>
-                <span className="font-mono text-label text-faint tabular">
+                <span className="font-mono text-label text-muted tabular">
                   {project.dates.label}
                 </span>
                 {project.context === "internship" ? (
@@ -240,7 +240,7 @@ export function ProfileContent({
               {isKnown(cert.provider) ? (
                 <span className="text-muted"> — {cert.provider}</span>
               ) : null}
-              <span className="ms-2 font-mono text-label text-faint">
+              <span className="ms-2 font-mono text-label text-muted">
                 {cert.format}
               </span>
             </li>

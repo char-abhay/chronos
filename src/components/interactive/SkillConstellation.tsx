@@ -25,6 +25,12 @@ type ProjectRef = { slug: string; name: string; dates: string };
  * is no "0 projects" state, because advertising a gap helps nobody.
  *
  * Data is passed in as props so the content modules stay on the server.
+ *
+ * What gets announced is one sentence in a visually-hidden live region.
+ * The plate itself used to be the live region, so selecting a cluster
+ * re-read every skill chip in it -- twenty of them for one click. The
+ * summary carries the count and which builds lit up; the chips stay
+ * readable underneath at the user's own pace.
  */
 export function SkillConstellation({
   clusters,
@@ -72,17 +78,29 @@ export function SkillConstellation({
         </ul>
       </div>
 
+      <p className="sr-only" aria-live="polite">
+        {activeCluster
+          ? activeCluster.label +
+            ": " +
+            activeCluster.items.length +
+            " skills. " +
+            (linked.size > 0
+              ? projects
+                  .filter((project) => linked.has(project.slug))
+                  .map((project) => project.name)
+                  .join(", ") + " highlighted."
+              : "No build on the record uses this yet.")
+          : ""}
+      </p>
+
       {/* The selected cluster's contents. */}
-      <div
-        aria-live="polite"
-        className="min-h-24 rounded-[2px] border border-hairline bg-ground-raised p-6"
-      >
+      <div className="min-h-24 rounded-[2px] border border-hairline bg-ground-raised p-6">
         {activeCluster ? (
           <>
             <p className="font-mono text-label uppercase tracking-label text-data">
               {activeCluster.label}
               {activeCluster.note ? (
-                <span className="ms-3 text-faint">{activeCluster.note}</span>
+                <span className="ms-3 text-muted">{activeCluster.note}</span>
               ) : null}
             </p>
             <ul className="mt-4 flex flex-wrap gap-2">
@@ -106,7 +124,7 @@ export function SkillConstellation({
 
       {/* Projects. Dim when a cluster is selected and they are not in it. */}
       <div>
-        <p className="font-mono text-label uppercase tracking-label text-faint">
+        <p className="font-mono text-label uppercase tracking-label text-muted">
           Built
         </p>
         <ul className="mt-4 grid gap-2 sm:grid-cols-2">
@@ -132,7 +150,7 @@ export function SkillConstellation({
                   >
                     {project.name}
                   </span>
-                  <span className="font-mono text-label text-faint tabular">
+                  <span className="font-mono text-label text-muted tabular">
                     {project.dates}
                   </span>
                 </Link>

@@ -37,8 +37,14 @@ export type TrackItem = {
  *   - it is a real <input type="range">, so arrows, Home and End all
  *     work natively and it is announced as a slider
  *   - aria-valuetext says "March 2026 — dVoting", not "37"
- *   - the bars are aria-hidden decoration; the live region below and
- *     the full list underneath carry the same information as text
+ *   - the bars are aria-hidden decoration; the plate below and the full
+ *     list underneath carry the same information as text
+ *
+ * The plate below is deliberately NOT a live region. It once was, which
+ * meant every arrow-key press re-announced the whole panel -- headings,
+ * links, meta lines, detail paragraphs -- for a one-month move. The
+ * slider's own aria-valuetext already announces exactly the summary a
+ * live region would have carried, so a second one would only double it.
  */
 export function TimeScrubber({ items }: { items: TrackItem[] }) {
   // Open on the most recent BUILD, not the latest date on the axis --
@@ -72,7 +78,7 @@ export function TimeScrubber({ items }: { items: TrackItem[] }) {
               <span
                 key={year}
                 style={{ left: toPercent((year - years[0]) * 12) + "%" }}
-                className="absolute top-0 -translate-x-1/2 font-mono text-label text-faint tabular"
+                className="absolute top-0 -translate-x-1/2 font-mono text-label text-muted tabular"
               >
                 {year}
               </span>
@@ -131,10 +137,7 @@ export function TimeScrubber({ items }: { items: TrackItem[] }) {
       </div>
 
       {/* ---------- WHAT WAS HAPPENING ---------- */}
-      <div
-        aria-live="polite"
-        className="min-h-40 rounded-[2px] border border-hairline bg-ground-raised p-6"
-      >
+      <div className="min-h-40 rounded-[2px] border border-hairline bg-ground-raised p-6">
         <p className="font-mono text-label uppercase tracking-label text-data tabular">
           {formatMonth(month)}
         </p>
@@ -143,7 +146,7 @@ export function TimeScrubber({ items }: { items: TrackItem[] }) {
           <ul className="mt-4 flex flex-col gap-4">
             {active.map(({ item }) => (
               <li key={item.id}>
-                <p className="font-mono text-label uppercase tracking-label text-faint">
+                <p className="font-mono text-label uppercase tracking-label text-muted">
                   {item.kind === "education"
                     ? "Studying"
                     : item.kind === "internship"

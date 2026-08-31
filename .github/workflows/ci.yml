@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      # Reported, never enforced. The content layer records real gaps as
+      # UNKNOWN rather than inventing facts, and several are waiting on
+      # information only Abhay has. Passing --ci here would exit 1 and
+      # fail every build until the last one is answered, which trains
+      # everyone to ignore a red tick. Unflagged, it prints the standing
+      # list on every push -- which is the useful behaviour. Do not
+      # "fix" this by adding the flag.
+      - name: Content gaps (report only)
+        run: npm run gaps

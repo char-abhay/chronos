@@ -75,16 +75,16 @@ export default function StyleGuide() {
             </caption>
             <thead>
               <tr className="border-b border-hairline">
-                <th scope="col" className="py-2 text-start font-mono text-label uppercase tracking-label text-faint">
+                <th scope="col" className="py-2 text-start font-mono text-label uppercase tracking-label text-muted">
                   Token
                 </th>
-                <th scope="col" className="py-2 text-start font-mono text-label uppercase tracking-label text-faint">
+                <th scope="col" className="py-2 text-start font-mono text-label uppercase tracking-label text-muted">
                   Sample
                 </th>
-                <th scope="col" className="py-2 text-start font-mono text-label uppercase tracking-label text-faint">
+                <th scope="col" className="py-2 text-start font-mono text-label uppercase tracking-label text-muted">
                   Ratio
                 </th>
-                <th scope="col" className="py-2 text-start font-mono text-label uppercase tracking-label text-faint">
+                <th scope="col" className="py-2 text-start font-mono text-label uppercase tracking-label text-muted">
                   Use
                 </th>
               </tr>

@@ -74,7 +74,7 @@ export function Chrome({ profileContent }: { profileContent: React.ReactNode }) 
                       "font-mono text-label tabular transition-colors dur-micro",
                       active
                         ? "bg-ground-raised text-signal"
-                        : "text-faint hover:text-primary"
+                        : "text-muted hover:text-primary"
                     )}
                   >
                     <span aria-hidden="true">{d.index}</span>
@@ -157,7 +157,7 @@ export function Chrome({ profileContent }: { profileContent: React.ReactNode }) 
                     <span
                       className={cn(
                         "font-mono text-label tabular",
-                        active ? "text-signal" : "text-faint"
+                        active ? "text-signal" : "text-muted"
                       )}
                     >
                       {d.index}

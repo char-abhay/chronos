@@ -64,7 +64,7 @@ export default function ConstellationPage() {
                 <dt className="text-body-sm text-muted">
                   {group.label}
                   {group.note ? (
-                    <span className="ms-2 font-mono text-label text-faint">
+                    <span className="ms-2 font-mono text-label text-muted">
                       {group.note}
                     </span>
                   ) : null}

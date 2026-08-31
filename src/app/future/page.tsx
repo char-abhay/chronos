@@ -67,7 +67,7 @@ export default function NextPage() {
           </ButtonLink>
         </div>
 
-        <p className="mt-24 font-mono text-label uppercase tracking-label text-faint">
+        <p className="mt-24 font-mono text-label uppercase tracking-label text-muted">
           This page is intentionally unfinished.
         </p>
       </Container>
