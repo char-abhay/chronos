@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { destinations } from "@/content/destinations";
+import { education, profile } from "@/content";
 
 /**
  * WHAT A PASTED LINK LOOKS LIKE.
@@ -21,7 +22,8 @@ import { destinations } from "@/content/destinations";
  */
 
 export const alt =
-  "CHRONOS — Abhay P, BCA graduate specialising in Cloud Computing";
+  `CHRONOS — ${profile.name}, BCA graduate specialising in ` +
+  education.specialisation;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -86,7 +88,7 @@ export default function Image() {
               letterSpacing: -2,
             }}
           >
-            Abhay P
+            {profile.name}
           </div>
           <div
             style={{
@@ -105,7 +107,7 @@ export default function Image() {
               lineHeight: 1.3,
             }}
           >
-            BCA graduate, Cloud Computing
+            {"BCA graduate, " + education.specialisation}
           </div>
           <div style={{ marginTop: 12, color: MUTED, fontSize: 26 }}>
             A journey through space and time that happens to be a portfolio.

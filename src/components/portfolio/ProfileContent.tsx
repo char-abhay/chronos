@@ -85,7 +85,7 @@ export function ProfileContent({
           {profile.name}
         </Heading>
         <p className="mt-2 text-secondary">
-          {profile.credential} — Cloud Computing
+          {profile.credential} — {education.specialisation}
         </p>
         <p className="mt-1 text-body-sm text-muted">{profile.location}</p>
 

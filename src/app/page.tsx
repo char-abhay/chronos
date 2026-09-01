@@ -7,6 +7,7 @@ import { ExternalLink } from "@/components/ui/ExternalLink";
 import { Stamp } from "@/components/ui/Stamp";
 import { destinations } from "@/content/destinations";
 import { education, experience, profile, projectsOrdered } from "@/content";
+import { spell, spellLower, plural } from "@/lib/format/count";
 
 /**
  * FIRST SCREEN.
@@ -21,6 +22,14 @@ import { education, experience, profile, projectsOrdered } from "@/content";
  */
 export default function Home() {
   const role = experience[0];
+
+  /* Written by hand as "Five things built -- one of them on the job"
+     directly above a list that derives itself. Both numbers now come
+     from the same place the list does, so the sentence cannot end up
+     introducing a count the page then contradicts. */
+  const onTheJob = projectsOrdered.filter(
+    (project) => project.context === "internship"
+  ).length;
   const featured = projectsOrdered.find((p) => p.featured);
 
   return (
@@ -39,8 +48,9 @@ export default function Home() {
 
         <InView delay={160}>
           <p className="mt-5 max-w-reading text-body-lg text-secondary">
-            {profile.credential}, specialising in Cloud Computing. Five things
-            built — one of them on the job.
+            {profile.credential}, specialising in {education.specialisation}.{" "}
+            {spell(projectsOrdered.length)} thing{plural(projectsOrdered.length)}{" "}
+            built — {spellLower(onTheJob)} of them on the job.
           </p>
         </InView>
 
@@ -134,7 +144,7 @@ export default function Home() {
       {/* ---------- BEAT TWO: the regions ---------- */}
       <Container className="pt-24 sm:pt-32">
         <InView>
-          <Stamp>Eight regions</Stamp>
+          <Stamp>{spell(destinations.length)} regions</Stamp>
         </InView>
         <InView delay={80}>
           <p className="mt-5 max-w-reading text-body-lg text-secondary">

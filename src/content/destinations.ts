@@ -1,4 +1,8 @@
+import { spell } from "@/lib/format/count";
+import { education } from "./education";
+import { projectsOrdered } from "./projects";
 import type { Destination } from "./schema";
+import { skillGroups } from "./skills";
 
 /**
  * Eight regions -- every one of them about Abhay.
@@ -12,6 +16,13 @@ import type { Destination } from "./schema";
  * The hooks are the curiosity layer: short, atmospheric, and slightly
  * withholding. They should make someone want to open a region, never
  * summarise what is inside it.
+ *
+ * Where a scale or a hook counts something, it counts it from the
+ * record. These render in the Arrival banner on four pages, in the nav
+ * rail, in the map and on the 404 -- so a sixth build used to update
+ * the Solar System page while its own arrival stamp went on announcing
+ * five, on the same screen. A count is not an independent fact; it is a
+ * property of the list, and it belongs to the list.
  */
 export const destinations: Destination[] = [
   {
@@ -27,8 +38,13 @@ export const destinations: Destination[] = [
     index: "02",
     name: "Time",
     href: "/time",
-    scale: "2023 — 2026",
-    hook: "Three years, in order.",
+    scale:
+      education.dates.start + " — " + (education.dates.end ?? education.dates.start),
+    hook:
+      spell(
+        Number(education.dates.end ?? education.dates.start) -
+          Number(education.dates.start)
+      ) + " years, in order.",
   },
   {
     id: "earth",
@@ -43,15 +59,15 @@ export const destinations: Destination[] = [
     index: "04",
     name: "Solar System",
     href: "/solar-system",
-    scale: "5 built",
-    hook: "Five builds, still in orbit.",
+    scale: projectsOrdered.length + " built",
+    hook: spell(projectsOrdered.length) + " builds, still in orbit.",
   },
   {
     id: "galaxy",
     index: "05",
     name: "Galaxy",
     href: "/galaxy",
-    scale: "6 clusters",
+    scale: skillGroups.length + " clusters",
     hook: "What connects to what.",
   },
   {

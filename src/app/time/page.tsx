@@ -11,15 +11,31 @@ import {
 } from "@/components/interactive/TimeScrubber";
 import { Chip } from "@/components/ui/Chip";
 import { getDestination } from "@/content/destinations";
-import { education, experience, projectsOrdered } from "@/content";
+import { education, experience, profile, projectsOrdered } from "@/content";
+import { spell, spellLower } from "@/lib/format/count";
+import { years } from "@/lib/format/timeline";
 
 const destination = getDestination("time")!;
 
 export const metadata: Metadata = {
   title: destination.name,
   description:
-    "Abhay P — degree, internship and five builds between 2023 and 2026, on one timeline.",
+    `${profile.name} — degree, internship and ${spellLower(projectsOrdered.length)} builds ` +
+    `between ${years[0]} and ${years[years.length - 1]}, on one timeline.`,
 };
+
+/**
+ * How long the degree ran, in years.
+ *
+ * Not years.length -- that is the number of calendar-year labels on the
+ * axis, which is four for a span of 2023 to 2026 and would have made
+ * both sentences below say "four" about a three-year degree. The axis
+ * and the degree are different measurements that happen to share a
+ * start; only one of them is what this prose is describing.
+ */
+const degreeYears =
+  Number(education.dates.end ?? education.dates.start) -
+  Number(education.dates.start);
 
 /** Everything that has a date, as one set of tracks. */
 function buildTracks(): TrackItem[] {
@@ -41,6 +57,7 @@ function buildTracks(): TrackItem[] {
       end: role.dates.end ?? role.dates.start,
       kind: "internship" as const,
       detail: role.bullets[0],
+      extra: role.bullets.slice(1),
     })),
     ...projectsOrdered.map((project) => ({
       id: project.slug,
@@ -73,8 +90,8 @@ export default function TimePage() {
       <Container className="pt-12 sm:pt-16">
         <InView>
           <p className="max-w-reading text-body-lg text-secondary">
-            Drag across three years. The long bar is the degree; everything
-            else happened inside it.
+            Drag across {spellLower(degreeYears)} years. The long bar is the
+            degree; everything else happened inside it.
           </p>
         </InView>
 
@@ -105,7 +122,8 @@ export default function TimePage() {
                       item.kind === "internship"
                         ? "The only outside assessment on this site."
                         : item.kind === "education"
-                          ? "Three years. One of the subjects stuck."
+                          ? spell(degreeYears) +
+                            " years. One of the subjects stuck."
                           : undefined
                     }
                   >
@@ -130,13 +148,16 @@ export default function TimePage() {
                         </>
                       ) : null}
 
-                      {item.kind === "internship"
-                        ? experience[0].bullets.slice(1).map((b) => (
-                            <p key={b} className="mt-3 text-body-sm">
-                              {b}
-                            </p>
-                          ))
-                        : null}
+                      {/* From the item, not from experience[0]. This
+                          sits inside a map over every internship, so
+                          indexing the source array meant a second role
+                          would have rendered the first one's
+                          achievements under its own heading. */}
+                      {item.extra?.map((b) => (
+                        <p key={b} className="mt-3 text-body-sm">
+                          {b}
+                        </p>
+                      ))}
                     </div>
                   </Reveal>
                 </InView>

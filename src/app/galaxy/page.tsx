@@ -7,13 +7,15 @@ import { SkillConstellation } from "@/components/interactive/SkillConstellation"
 import { Chip } from "@/components/ui/Chip";
 import { getDestination } from "@/content/destinations";
 import { projectsOrdered, skillGroups } from "@/content";
+import { profile } from "@/content";
 
 const destination = getDestination("galaxy")!;
 
 export const metadata: Metadata = {
   title: destination.name,
   description:
-    "The technical skills of Abhay P, and which builds each one actually turned up in.",
+    `The technical skills of ${profile.name}, and which builds each one ` +
+    "actually turned up in.",
 };
 
 export default function ConstellationPage() {

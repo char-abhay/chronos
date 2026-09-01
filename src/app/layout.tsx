@@ -7,7 +7,9 @@ import { Footer } from "@/components/layout/Footer";
 import { Chrome } from "@/components/navigation/Chrome";
 import { SkipLink } from "@/components/navigation/SkipLink";
 import { ProfileContent } from "@/components/portfolio/ProfileContent";
+import { education, experience, profile } from "@/content";
 import { siteUrl } from "@/lib/site";
+import { endSentence } from "@/lib/format/prose";
 import "./globals.css";
 
 /* Three roles, three families (plan F.2).
@@ -31,21 +33,33 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+/* The metadata layer was a second, unsynchronised copy of the record:
+   the name written out six times, the specialisation, the employer. It
+   is what Google, LinkedIn and Slack show, so a change to the content
+   layer that stopped here would leave the search result describing an
+   older Abhay than the page it links to. The wording stays bespoke --
+   only the facts inside it are read from source. */
+const siteName = "CHRONOS — " + profile.name;
+const headline =
+  profile.name + " — BCA Graduate, " + education.specialisation;
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Abhay P — BCA Graduate, Cloud Computing",
-    template: "%s · CHRONOS — Abhay P",
+    default: headline,
+    template: "%s · " + siteName,
   },
   description:
-    "Abhay P — BCA graduate specialising in Cloud Computing. Full Stack Development Intern at EduPhoenix Solutions. Projects in blockchain, AI, IoT and web development.",
-  authors: [{ name: "Abhay P" }],
-  creator: "Abhay P",
+    `${profile.name} — BCA graduate specialising in ${education.specialisation}. ` +
+    endSentence(`${experience[0].role} at ${experience[0].organisation}`) +
+    " Projects in blockchain, AI, IoT and web development.",
+  authors: [{ name: profile.name }],
+  creator: profile.name,
   openGraph: {
     type: "website",
     locale: "en_IN",
-    siteName: "CHRONOS — Abhay P",
-    title: "Abhay P — BCA Graduate, Cloud Computing",
+    siteName,
+    title: headline,
     description:
       "A journey through space and time that happens to be a developer portfolio.",
   },

@@ -4,7 +4,7 @@ import { Container } from "@/components/layout/Container";
 import { Chip } from "@/components/ui/Chip";
 import { ExternalLink } from "@/components/ui/ExternalLink";
 import { Stamp } from "@/components/ui/Stamp";
-import { getProject, isKnown, projects } from "@/content";
+import { experience, getProject, isKnown, projects } from "@/content";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -24,11 +24,22 @@ export default async function ProjectPage({ params }: Params) {
   const project = getProject(slug);
   if (!project) notFound();
 
+  /* Which role produced this, if any. experience[].deliverables already
+     records that link and ProfileContent reads it; this stamp used to
+     ignore it and print one company name for every internship project,
+     so a second internship elsewhere would have credited the wrong
+     employer on the page describing its own work. No claimant means no
+     name -- "Internship project" alone is true, and naming a company
+     that did not build it would not be. */
+  const employer = experience.find((role) =>
+    role.deliverables?.includes(project.slug)
+  );
+
   return (
     <Container width="reading" className="py-16 sm:py-24">
       <Stamp>
         {project.context === "internship"
-          ? "Internship project · EduPhoenix Solutions"
+          ? "Internship project" + (employer ? " · " + employer.organisation : "")
           : "Academic project"}{" "}
         · {project.dates.label}
       </Stamp>

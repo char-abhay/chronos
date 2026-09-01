@@ -8,7 +8,7 @@ import { ContactForm } from "./ContactForm";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Get in touch with Abhay P — email, GitHub, LinkedIn and resume.",
+    `Get in touch with ${profile.name} — email, GitHub, LinkedIn and resume.`,
 };
 
 export default function ContactPage() {

@@ -18,13 +18,16 @@ import {
   skillGroups,
   subjects,
 } from "@/content";
+import { spell } from "@/lib/format/count";
 
 const destination = getDestination("earth")!;
 
 export const metadata: Metadata = {
   title: destination.name,
   description:
-    "Where Abhay P started — Kasaragod, Kerala to CMR University, Bangalore. BCA specialising in Cloud Computing.",
+    `Where ${profile.name} started — Kasaragod, Kerala to ` +
+    `${education.institution}, Bangalore. BCA specialising in ` +
+    `${education.specialisation}.`,
 };
 
 /**
@@ -38,6 +41,38 @@ export const metadata: Metadata = {
  * change. Nothing is invented to make the three look balanced; if they
  * are lopsided, that is what the data says.
  */
+/* The sentence above SubjectTrace used to assert this by hand. It is
+   exactly the fact subjects.ts was written to derive, so the day a
+   cloud project lands the widget would have updated and the line
+   introducing it would not. */
+/**
+ * Which groups count as "the tools that came with it".
+ *
+ * Which two belong here is a curation choice and stays one -- it is not
+ * derivable, and pretending otherwise would change what the section
+ * shows. What is not acceptable is the old failure mode: renaming
+ * either id in skills.ts emptied this disclosure to zero chips under a
+ * heading still promising tools, and built green. So the choice is
+ * stated once and checked, the same way subjects.ts checks its own
+ * joins -- a rename now fails the build with the missing id named.
+ */
+const TOOL_GROUP_IDS = ["systems", "languages"];
+
+const toolGroups = TOOL_GROUP_IDS.map((id) => {
+  const group = skillGroups.find((g) => g.id === id);
+  if (!group) {
+    throw new Error(
+      `/earth expects a skill group with id "${id}", which is not in ` +
+        `skills.ts (${skillGroups.map((g) => g.id).join(", ")}).`
+    );
+  }
+  return group;
+});
+
+const subjectsWithBuilds = subjects.filter(
+  (subject) => subject.builds.length > 0
+).length;
+
 function buildSubjects(): Subject[] {
   return subjects.map((subject) => ({
     id: subject.id,
@@ -113,12 +148,13 @@ export default function EarthPage() {
       <Container className="pt-16 sm:pt-24">
         <InView>
           <h2 className="font-mono text-label uppercase tracking-label text-data">
-            Three subjects
+            {spell(subjects.length)} subjects
           </h2>
         </InView>
         <InView delay={80}>
           <p className="mt-4 max-w-reading text-body-lg text-secondary">
-            Two of them became something you can open. Pick one.
+            {spell(subjectsWithBuilds)} of them became something you can
+            open. Pick one.
           </p>
         </InView>
         <InView delay={160} className="mt-8">
@@ -184,8 +220,7 @@ export default function EarthPage() {
               hint="The unglamorous half of the degree."
             >
               <div className="flex flex-wrap gap-2">
-                {skillGroups
-                  .filter((g) => g.id === "systems" || g.id === "languages")
+                {toolGroups
                   .flatMap((g) => g.items)
                   .map((item) => (
                     <Chip key={item}>{item}</Chip>

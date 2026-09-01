@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { destinations } from "@/content/destinations";
+import type { DestinationId } from "@/content/schema";
+import { spell } from "@/lib/format/count";
 import { cn } from "@/lib/cn";
 
 /**
@@ -18,8 +20,16 @@ import { cn } from "@/lib/cn";
  * screen reader hears "list, 8 items"; a sighted user sees a map.
  */
 
-/** Positions as percentages. Presentation only -- order lives in the list. */
-const layout: Record<string, { x: number; y: number }> = {
+/**
+ * Positions as percentages. Presentation only -- order lives in the list.
+ *
+ * Keyed by DestinationId rather than by string, the way space.ts does
+ * it. That is the whole point of the annotation: a ninth destination
+ * with no entry here used to sail through the compiler and then throw
+ * on `pos.x` in the browser, taking the Map panel down with it. Now it
+ * simply fails to build, with the missing id named.
+ */
+const layout: Record<DestinationId, { x: number; y: number }> = {
   home: { x: 12, y: 50 },
   time: { x: 27, y: 26 },
   earth: { x: 40, y: 68 },
@@ -30,15 +40,18 @@ const layout: Record<string, { x: number; y: number }> = {
   story: { x: 50, y: 90 },
 };
 
-const order = [
-  "home",
-  "time",
-  "earth",
-  "solar-system",
-  "galaxy",
-  "black-holes",
-  "future",
-];
+/**
+ * The spine the connecting line traces, in nav order.
+ *
+ * Story sits off it deliberately -- it runs alongside the journey
+ * rather than being a stop on it, so the polyline would have to double
+ * back to include it. Derived rather than hand-listed so that
+ * reordering the nav moves the line with it; the old literal array
+ * would have gone on drawing a route the site no longer took.
+ */
+const order = destinations
+  .map((d) => d.id)
+  .filter((id) => id !== "story");
 
 export function MapOverlay({ onNavigate }: { onNavigate: () => void }) {
   const pathname = usePathname();
@@ -46,7 +59,8 @@ export function MapOverlay({ onNavigate }: { onNavigate: () => void }) {
   return (
     <div>
       <p className="max-w-reading text-secondary">
-        Eight regions of one continuous universe. You can enter anywhere —
+        {spell(destinations.length)} regions of one continuous universe. You
+        can enter anywhere —
         nothing here is locked, and no order is required.
       </p>
 

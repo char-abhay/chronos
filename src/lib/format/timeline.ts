@@ -1,12 +1,38 @@
+import { education, experience, projectsOrdered } from "@/content";
+
 /**
  * Timeline maths. Pure functions, no React -- easy to reason about and
  * easy to check by hand.
  *
- * The axis runs January 2023 to December 2026: the whole span of the
- * degree, with nothing invented on either end.
+ * The axis runs from January of the earliest year on the record to
+ * December of the latest, which today is 2023 to 2026: the whole span
+ * of the degree, with nothing invented on either end.
+ *
+ * Those two years used to be written here as literals, which was
+ * education.dates copied into a lib module. It fed the scrubber and,
+ * through layout.ts, the entire 3D Time scene -- so the first build
+ * dated 2027 would have pushed toPercent above 100 and drawn the bar
+ * off the right-hand edge of the chart, while formatMonth clamped the
+ * scrubber at December 2026 and made the newest work unreachable.
+ * Nothing would have thrown. The page would simply have lied, which is
+ * the one failure this site cannot afford.
+ *
+ * Every dated thing is included rather than just the degree, because a
+ * job that outlasts the degree is the ordinary case and the axis has to
+ * survive it.
  */
-export const AXIS_START_YEAR = 2023;
-export const AXIS_END_YEAR = 2026;
+const spans = [
+  education.dates,
+  ...experience.map((role) => role.dates),
+  ...projectsOrdered.map((project) => project.dates),
+];
+
+const boundaryYears = spans.flatMap((span) =>
+  [span.start, span.end ?? span.start].map((value) => Number(value.slice(0, 4)))
+);
+
+export const AXIS_START_YEAR = Math.min(...boundaryYears);
+export const AXIS_END_YEAR = Math.max(...boundaryYears);
 export const AXIS_MONTHS = (AXIS_END_YEAR - AXIS_START_YEAR + 1) * 12;
 
 /**

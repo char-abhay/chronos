@@ -6,14 +6,26 @@ import { Arrival } from "@/components/sections/Arrival";
 import { Departure } from "@/components/sections/Departure";
 import { Reveal } from "@/components/interactive/Reveal";
 import { getDestination } from "@/content/destinations";
-import { projectsOrdered } from "@/content";
+import { profile, projectsOrdered } from "@/content";
+import { endSentence, listOut } from "@/lib/format/prose";
 
 const destination = getDestination("black-holes")!;
+
+/* Named from the record, not from a literal. The page below already
+   filters for every project carrying challenges, so hard-coding one
+   project's name here meant the description could go on crediting a
+   single build after a second one had joined it. */
+const challengeProjects = projectsOrdered.filter(
+  (project) => project.challenges && project.challenges.length > 0
+);
 
 export const metadata: Metadata = {
   title: destination.name,
   description:
-    "The hard parts — the technical problems Abhay P had to solve while building dVoting.",
+    `The hard parts — the technical problems ${profile.name} had to solve ` +
+    endSentence(
+      "while building " + listOut(challengeProjects.map((p) => p.name))
+    ),
 };
 
 /**
@@ -22,9 +34,7 @@ export const metadata: Metadata = {
  * from -- there is no generic "I am a problem solver" filler.
  */
 export default function PressurePage() {
-  const withChallenges = projectsOrdered.filter(
-    (p) => p.challenges && p.challenges.length > 0
-  );
+  const withChallenges = challengeProjects;
 
   return (
     <>

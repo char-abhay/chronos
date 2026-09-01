@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/layout/Container";
 import { ProfileContent } from "@/components/portfolio/ProfileContent";
 import { Stamp } from "@/components/ui/Stamp";
-import { profile } from "@/content";
+import { education, profile } from "@/content";
 
 /**
  * The same content module as the PROFILE overlay, at a real URL so it
@@ -12,7 +12,8 @@ import { profile } from "@/content";
 export const metadata: Metadata = {
   title: "Profile",
   description:
-    "Abhay P — BCA graduate specialising in Cloud Computing. Education, internship, technical skills, projects and contact details.",
+    `${profile.name} — BCA graduate specialising in ${education.specialisation}. ` +
+    "Education, internship, technical skills, projects and contact details.",
 };
 
 export default function ProfilePage() {

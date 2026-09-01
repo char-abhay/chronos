@@ -3,7 +3,7 @@ import { Container } from "@/components/layout/Container";
 import { ProfileContent } from "@/components/portfolio/ProfileContent";
 import { ButtonLink } from "@/components/ui/Button";
 import { Stamp } from "@/components/ui/Stamp";
-import { profile } from "@/content";
+import { education, profile } from "@/content";
 
 /**
  * Print-optimised resume.
@@ -15,7 +15,8 @@ import { profile } from "@/content";
 export const metadata: Metadata = {
   title: "Resume",
   description:
-    "Resume of Abhay P — BCA graduate, Cloud Computing. Available as a web page and as a PDF download.",
+    `Resume of ${profile.name} — BCA graduate, ${education.specialisation}. ` +
+    "Available as a web page and as a PDF download.",
 };
 
 export default function ResumePage() {

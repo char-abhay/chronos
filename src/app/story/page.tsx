@@ -6,13 +6,16 @@ import { Departure } from "@/components/sections/Departure";
 import { Timeline, TimelineItem } from "@/components/ui/Timeline";
 import { getDestination } from "@/content/destinations";
 import { isKnown, projectsOrdered, storySegments } from "@/content";
+import { education, profile } from "@/content";
+import { spellLower } from "@/lib/format/count";
 
 const destination = getDestination("story")!;
 
 export const metadata: Metadata = {
   title: destination.name,
   description:
-    "Abhay P — BCA graduate in Cloud Computing. Education, internship and five projects, as a timeline.",
+    `${profile.name} — BCA graduate in ${education.specialisation}. Education, ` +
+    `internship and ${spellLower(projectsOrdered.length)} projects, as a timeline.`,
 };
 
 export default function StoryPage() {

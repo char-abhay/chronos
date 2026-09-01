@@ -8,15 +8,23 @@ import { Reveal } from "@/components/interactive/Reveal";
 import { Chip } from "@/components/ui/Chip";
 import { ExternalLink } from "@/components/ui/ExternalLink";
 import { getDestination } from "@/content/destinations";
-import { projectsOrdered } from "@/content";
+import { profile, projectsOrdered } from "@/content";
+import { spell, spellLower } from "@/lib/format/count";
+import { endSentence, listOut } from "@/lib/format/prose";
 
 const destination = getDestination("solar-system")!;
 
 export const metadata: Metadata = {
   title: destination.name,
   description:
-    "Five systems built by Abhay P — blockchain voting, IoT object detection, an AI chatbot, a digital voting machine and an e-commerce platform.",
+    `${spell(projectsOrdered.length)} systems built by ${profile.name} — ` +
+    endSentence(listOut(projectsOrdered.map((project) => project.name))),
 };
+
+const onTheJob = projectsOrdered.filter(
+  (project) => project.context === "internship"
+).length;
+const forTheDegree = projectsOrdered.length - onTheJob;
 
 export default function SystemsPage() {
   return (
@@ -31,7 +39,8 @@ export default function SystemsPage() {
       <Container className="pt-12 sm:pt-16">
         <InView>
           <p className="max-w-reading text-body-lg text-secondary">
-            One built on the job, four for the degree. Open any of them.
+            {spell(onTheJob)} built on the job, {spellLower(forTheDegree)} for
+            the degree. Open any of them.
           </p>
         </InView>
 

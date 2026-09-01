@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { cn } from "@/lib/cn";
+import { spell } from "@/lib/format/count";
 
 type Cluster = {
   id: string;
@@ -116,8 +117,8 @@ export function SkillConstellation({
           </>
         ) : (
           <p className="text-body-sm text-muted">
-            Six clusters. Pick one to see what is in it, and which builds
-            it turned up in.
+            {spell(clusters.length)} clusters. Pick one to see what is in
+            it, and which builds it turned up in.
           </p>
         )}
       </div>

@@ -12,7 +12,8 @@ const destination = getDestination("future")!;
 export const metadata: Metadata = {
   title: destination.name,
   description:
-    "Abhay P is looking for an entry-level Software Developer or IT role. Email, GitHub, LinkedIn and resume.",
+    `${profile.name} is looking for an entry-level Software Developer or IT ` +
+    "role. Email, GitHub, LinkedIn and resume.",
 };
 
 /**

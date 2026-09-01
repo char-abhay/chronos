@@ -21,6 +21,13 @@ export type TrackItem = {
   kind: "education" | "internship" | "build";
   href?: string;
   detail?: string;
+  /**
+   * Anything further this item wants written out beneath `detail`.
+   * It travels on the item so a consumer rendering a list of tracks
+   * cannot reach back into the source array by index and fetch the
+   * wrong row's words -- which is exactly what /time used to do.
+   */
+  extra?: string[];
 };
 
 /**

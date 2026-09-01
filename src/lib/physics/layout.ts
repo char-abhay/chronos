@@ -2,7 +2,6 @@ import {
   destinations,
   education,
   experience,
-  getProject,
   isKnown,
   projectsOrdered,
   skillGroups,
@@ -211,15 +210,21 @@ export type DiskBand = {
 export const VOID_RADIUS = 3.4;
 
 /**
- * Four bands, one per challenge, in the order they are written. A band's
- * width comes from the length of the problem description: the harder a
- * thing was to explain, the more room it takes up.
+ * One band per challenge, in the order they are written. A band's width
+ * comes from the length of the problem description: the harder a thing
+ * was to explain, the more room it takes up.
  *
- * Every band belongs to dVoting -- the only project in the dataset with
- * challenges recorded, which is what the page says too.
+ * Today every band belongs to dVoting, the only project in the dataset
+ * with challenges recorded. It used to say so by fetching that slug
+ * directly, which quietly disagreed with its own page: black-holes
+ * renders the challenges of EVERY project that has them, so the second
+ * build to record one would have appeared in the writing and never in
+ * the disk. Same filter, same order, one truth.
  */
 export const blackHoles: DiskBand[] = (() => {
-  const challenges = getProject("dvoting")?.challenges ?? [];
+  const challenges = projectsOrdered.flatMap(
+    (project) => project.challenges ?? []
+  );
   if (challenges.length === 0) return [];
 
   const lengths = challenges.map((c) => c.body.length);

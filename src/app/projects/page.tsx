@@ -3,13 +3,19 @@ import { Container } from "@/components/layout/Container";
 import { Card } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
 import { Stamp } from "@/components/ui/Stamp";
-import { projectsOrdered } from "@/content";
+import { experience, profile, projectsOrdered } from "@/content";
+import { spell, spellLower } from "@/lib/format/count";
+import { endSentence } from "@/lib/format/prose";
 import type { Project } from "@/content/schema";
 
 export const metadata: Metadata = {
   title: "Projects",
   description:
-    "Five projects by Abhay P — blockchain, AI, IoT and web development, including work built during an internship at EduPhoenix Solutions.",
+    endSentence(
+      `${spell(projectsOrdered.length)} projects by ${profile.name} — blockchain, ` +
+        `AI, IoT and web development, including work built during an ` +
+        `internship at ${experience[0].organisation}`
+    ),
 };
 
 function ProjectCard({ project }: { project: Project }) {
@@ -40,6 +46,16 @@ function ProjectCard({ project }: { project: Project }) {
   );
 }
 
+/* Counted across every project, not across the three display buckets
+   below -- those exclude the featured ones, so reusing them would have
+   made the sentence disagree with its own page. */
+const internshipCount = projectsOrdered.filter(
+  (p) => p.context === "internship"
+).length;
+const academicCount = projectsOrdered.filter(
+  (p) => p.context === "academic"
+).length;
+
 export default function ProjectsPage() {
   const featured = projectsOrdered.filter((p) => p.featured);
   const internship = projectsOrdered.filter(
@@ -53,12 +69,12 @@ export default function ProjectsPage() {
     <Container className="py-16 sm:py-24">
       <Stamp>Projects</Stamp>
       <h1 className="mt-6 max-w-reading font-display text-display-lg leading-display tracking-display text-primary">
-        Five builds, in reverse order.
+        {spell(projectsOrdered.length)} builds, in reverse order.
       </h1>
       <p className="mt-4 max-w-reading text-secondary">
-        One built during an internship, four academic. Where a public
-        repository exists it is linked; where one does not, the code is
-        shown instead.
+        {spell(internshipCount)} built during an internship,{" "}
+        {spellLower(academicCount)} academic. Where a public repository exists
+        it is linked; where one does not, the code is shown instead.
       </p>
 
       {featured.length > 0 ? (
