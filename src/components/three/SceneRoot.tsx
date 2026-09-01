@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { SceneBoundary } from "@/components/three/SceneBoundary";
 import { useSceneTier } from "@/lib/performance/useSceneTier";
 
 /**
@@ -11,10 +12,18 @@ import { useSceneTier } from "@/lib/performance/useSceneTier";
  * WebGL world in its own chunk, requested only once a device has been
  * judged able to run it.
  *
- * When the tier is "off" the import is never even reached, so a phone,
- * a reduced-motion visitor or a browser without WebGL downloads not one
- * byte of three.js. What they get instead is the CSS atmosphere, which
- * has been the designed still frame since Phase 4.
+ * When the tier is "off" the import is never even reached, so nothing
+ * downloads a single byte of three.js: a reduced-motion visitor, a
+ * browser without WebGL, and a phone weak enough to be drowned by it.
+ * A capable phone is not in that list and does get the world, on the
+ * lean budget -- see useDeviceTier for why that distinction is drawn
+ * from cores rather than from a memory API half the browsers lack.
+ * What the excluded get instead is the CSS atmosphere, which has been
+ * the designed still frame since Phase 4.
+ *
+ * SceneBoundary is the other half of the same promise: the sky is
+ * allowed to be absent, and it is allowed to fail, but it is never
+ * allowed to take the page with it.
  */
 const Scene = dynamic(
   () => import("@/components/three/Scene").then((mod) => mod.Scene),
@@ -24,5 +33,9 @@ const Scene = dynamic(
 export function SceneRoot() {
   const tier = useSceneTier();
   if (tier === "off") return null;
-  return <Scene tier={tier} />;
+  return (
+    <SceneBoundary>
+      <Scene tier={tier} />
+    </SceneBoundary>
+  );
 }

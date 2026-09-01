@@ -55,6 +55,50 @@ export function Scene({ tier }: { tier: Exclude<SceneTier, "off"> }) {
     return () => document.removeEventListener("visibilitychange", onVisibility);
   }, []);
 
+  /**
+   * Losing the GL context is routine, not exceptional: a backgrounded
+   * tab, memory pressure or a GPU process restart will do it, and on a
+   * mid-range phone all three are ordinary events.
+   *
+   * Nothing unmounts when it happens, so the effect above never runs its
+   * cleanup and `sceneActive` stays true. The canvas becomes a dead
+   * transparent rectangle AND the 2D star field that exists to cover
+   * exactly this case keeps standing down, because it reads that flag.
+   * The result is an empty sky for the rest of the session, surviving a
+   * soft reload. sceneState already describes the intent -- "tearing the
+   * 3D scene down brings it straight back with no flash of empty sky" --
+   * it was simply never wired to the loss event.
+   *
+   * preventDefault() is not optional: without it the browser will not
+   * fire webglcontextrestored at all, and the loss becomes permanent by
+   * choice rather than by circumstance.
+   *
+   * The element is taken from onCreated and handled here rather than
+   * inline, because onCreated offers no cleanup hook and these listeners
+   * have to come off on unmount.
+   */
+  const [glCanvas, setGlCanvas] = useState<HTMLCanvasElement | null>(null);
+  useEffect(() => {
+    if (!glCanvas) return;
+
+    function onLost(event: Event) {
+      event.preventDefault();
+      setSceneActive(false);
+      setFrameloop("never");
+    }
+    function onRestored() {
+      setSceneActive(true);
+      setFrameloop(document.hidden ? "never" : "always");
+    }
+
+    glCanvas.addEventListener("webglcontextlost", onLost);
+    glCanvas.addEventListener("webglcontextrestored", onRestored);
+    return () => {
+      glCanvas.removeEventListener("webglcontextlost", onLost);
+      glCanvas.removeEventListener("webglcontextrestored", onRestored);
+    };
+  }, [glCanvas]);
+
   return (
     <div
       aria-hidden="true"
@@ -63,6 +107,7 @@ export function Scene({ tier }: { tier: Exclude<SceneTier, "off"> }) {
     >
       <Canvas
         frameloop={frameloop}
+        onCreated={({ gl }) => setGlCanvas(gl.domElement)}
         dpr={[1, budget.dpr]}
         gl={{
           antialias: tier === "full",

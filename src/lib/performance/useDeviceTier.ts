@@ -15,12 +15,27 @@ function resolve(): Tier {
   if (typeof window === "undefined") return "medium";
 
   const cores = navigator.hardwareConcurrency ?? 4;
-  const memory = (navigator as { deviceMemory?: number }).deviceMemory ?? 4;
   const coarse = window.matchMedia("(pointer: coarse)").matches;
   const small = window.innerWidth < 640;
 
-  if (coarse && (cores <= 4 || memory <= 4)) return "low";
-  if (small || cores <= 4 || memory <= 4) return "medium";
+  /**
+   * navigator.deviceMemory is Chromium-only. Safari and Firefox do not
+   * implement it, so a `?? 4` default read every one of them as the
+   * weakest supported device: every iPhone and iPad resolved to "low"
+   * and never downloaded the scene at all, while an 8-core Android
+   * phone escaped that branch and got the whole world. The nicest
+   * phones were served the plainest site, by accident of an API rather
+   * than by any decision.
+   *
+   * Absence is unknown, not weak. Only an actual reported value is
+   * allowed to demote anything; where the browser stays silent, the
+   * core count decides.
+   */
+  const reported = (navigator as { deviceMemory?: number }).deviceMemory;
+  const weakMemory = reported !== undefined && reported <= 4;
+
+  if (coarse && (cores <= 4 || weakMemory)) return "low";
+  if (small || cores <= 4 || weakMemory) return "medium";
   return "high";
 }
 
