@@ -3,19 +3,16 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   // Pin the workspace root: a stray package-lock.json in C:\Users\Abhay
   // otherwise makes Turbopack infer the wrong root.
+  //
+  // This is the whole config. Two other blocks used to live here and
+  // both described a build that does not exist: a `*.glsl` raw-import
+  // rule for shaders (every shader in this repo is an inline template
+  // literal -- there is not one .glsl, .vert or .frag file) and an
+  // optimizePackageImports entry for drei, which was never imported
+  // anywhere. Configuration that optimises nothing still has to be
+  // read and believed by whoever opens this file next.
   turbopack: {
     root: __dirname,
-    // Turbopack is the only bundler in Next 16 and does not run webpack
-    // plugins. `type: "raw"` is the supported way to import a shader as
-    // a string -- there is no glslify/raw-loader step.
-    rules: {
-      "*.glsl": { type: "raw" },
-    },
-  },
-  experimental: {
-    // drei is a large barrel; without this every named import drags the
-    // whole package into the scene chunk.
-    optimizePackageImports: ["@react-three/drei"],
   },
 };
 

@@ -7,9 +7,16 @@ import { useDeviceTier } from "@/lib/performance/useDeviceTier";
 /**
  * What the WebGL layer is allowed to do on this device.
  *
- *   full  -- everything: postprocessing, pointer parallax, full counts
- *   lean  -- geometry only: no postprocessing, reduced instance counts
+ *   full  -- full instance counts, dpr 2, pointer parallax on the camera
+ *   lean  -- the same world at about a third of the counts, dpr 1.5,
+ *            and the camera holds still
  *   off   -- no WebGL at all; the Scene chunk is never even imported
+ *
+ * These two lines used to say that `full` had postprocessing and `lean`
+ * did not. Nothing in this repo has ever implemented postprocessing --
+ * the packages were installed, never imported, and are now gone. The
+ * difference is entirely in sceneBudget below and in the parallax flag
+ * Scene.tsx passes to CameraRig, so that is what these say.
  *
  * "off" is a real, designed rendering mode, not a failure state. The CSS
  * atmosphere already carries hue, depth and horizon on its own, so a

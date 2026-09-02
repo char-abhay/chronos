@@ -28,6 +28,18 @@ jobs:
       - name: Build
         run: npm run build
 
+      # After Build, and that ordering is load-bearing. Most of the suite
+      # is pure functions, but tests/served-html.test.ts reads the
+      # prerendered HTML out of .next/server/app to check the README's
+      # non-negotiables against what a visitor is actually sent. Without
+      # a build there is nothing to read, so it fails loudly rather than
+      # passing on an empty directory.
+      #
+      # Enforced, unlike the gaps step below: this checks code, which is
+      # ours to break and ours to fix.
+      - name: Test
+        run: npm test
+
       # Reported, never enforced. The content layer records real gaps as
       # UNKNOWN rather than inventing facts, and several are waiting on
       # information only Abhay has. Passing --ci here would exit 1 and

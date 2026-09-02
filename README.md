@@ -4,11 +4,10 @@ The personal portfolio of **Abhay P** — BCA graduate, Cloud Computing
 specialisation, Bangalore.
 
 It is built as a universe of eight regions. That framing is not decoration over a
-CV: every object in the world is a piece of the actual record. The five bodies in
-the Solar System are the five things that got built. The six clusters in the
-Galaxy are the six skill groups, wired to the projects that use them. The
-accretion disk in Black Holes is made of the problems that did not solve
-themselves.
+CV: every object in the world is a piece of the actual record. The bodies in the
+Solar System are the things that got built. The clusters in the Galaxy are the
+skill groups, wired to the projects that use them. The accretion disk in Black
+Holes is made of the problems that did not solve themselves.
 
 **The portfolio is the content. CHRONOS is the presentation.**
 
@@ -17,10 +16,10 @@ themselves.
 | # | Region | What it holds |
 |---|---|---|
 | 01 | Home | Name, credential, current status — the facts, immediately |
-| 02 | Time | A scrubbable timeline across 2023–2026: degree, internship, five builds |
+| 02 | Time | A scrubbable timeline: the degree, the internship and every build, on one axis |
 | 03 | Earth | Kasaragod → Bangalore, the degree, and what each major subject became |
-| 04 | Solar System | The five builds, in full |
-| 05 | Galaxy | Six skill clusters, and what connects to what |
+| 04 | Solar System | Every build, in full |
+| 05 | Galaxy | The skill clusters, and what connects to what |
 | 06 | Black Holes | The hard parts — technical problems, written up honestly |
 | 07 | Future | Deliberately the sparsest page on the site |
 | 08 | My Story | The whole arc, in one line |
@@ -32,9 +31,13 @@ These are enforced, not aspirational.
 - **The recruiter guarantee.** Name, credential and current role are in
   server-rendered HTML, above the fold, before any scroll, animation or
   JavaScript. Nothing cinematic is allowed to cost that.
-- **It works with JavaScript off.** Scroll reveals render hidden and are unhidden
-  by script; a `<noscript>` rule in the root layout forces them visible, so the
-  content never depends on the animation layer.
+- **It works with JavaScript off.** Two mechanisms, because there are two ways
+  to lose content. Scroll reveals render hidden and are unhidden by script, so a
+  `<noscript>` rule in the root layout forces them visible. Disclosures are
+  native `<details>`, so their content is in the document from the first byte and
+  the browser opens them. `tests/served-html.test.ts` reads the prerendered HTML
+  and fails if either stops being true — this bullet was aspirational for
+  months before that test existed.
 - **Reduced motion is a rendering mode, not a fallback.** Components render a
   designed still state rather than a paused animation. Handled at four
   independent layers, down to the WebGL scene never being downloaded at all.
@@ -81,8 +84,8 @@ capability, a WebGL probe and the reduced-motion preference into one decision:
 
 | Tier | Result |
 |---|---|
-| `full` | Complete scene, postprocessing, pointer parallax |
-| `lean` | Geometry only — no postprocessing, reduced instance counts |
+| `full` | Full instance counts, dpr 2, pointer parallax on the camera |
+| `lean` | The same world at about a third of the counts, dpr 1.5, camera still |
 | `off` | The scene module is **never fetched**. three.js does not reach the device. |
 
 Because the eight regions are places in one coordinate space rather than eight
@@ -110,9 +113,15 @@ Quality gates:
 ```bash
 npm run lint
 npm run typecheck
-npm run gaps -- --ci
 npm run build
+npm test        # pure modules, plus the non-negotiables read off the build
+npm run gaps    # reports the standing gaps; --ci exits 1 on any
 ```
+
+`npm test` needs `npm run build` to have run first: the served-HTML guard reads
+`.next/server/app` rather than starting a server. CI runs `gaps` unflagged on
+purpose — the remaining gaps are waiting on facts only Abhay has, and a red tick
+that never goes green is a red tick everyone learns to ignore.
 
 `/styleguide` renders the full design system — every token, primitive and
 interaction state. It is noindexed and excluded from the sitemap.
@@ -122,8 +131,19 @@ interaction state. It is noindexed and excluded from the sitemap.
 Built in numbered phases; the history reads in order.
 
 Phases 0–6 delivered the content layer, design system, navigation shell and every
-region complete with zero 3D. Phase 7 added the WebGL foundation: the persistent
-canvas, the camera rig and the tiering that decides whether any of it loads.
+region complete with zero 3D — the site was finished before any of it moved.
+Phase 7 added the WebGL foundation: the persistent canvas, the camera rig and the
+tiering that decides whether any of it loads. Phase 8 brought the scroll engine,
+Phase 9 the eight per-region scenes, and Phase 10 shipped it — public URL,
+social preview, contrast floor and CI.
 
-In progress: the scroll engine (Phase 8) and the per-region scenes (Phase 9).
-Until Phase 9 lands, the world is a star field with a light at each region anchor.
+Everything since has been correction rather than construction, and the commit
+subjects say what each one was for. Three of them removed the same class of bug:
+a fact typed by hand into a component that the content layer already knew, which
+never throws and only ever makes the page quietly disagree with the record. One
+gave the WebGL layer an error boundary, so a failure in the decoration can no
+longer take the résumé down with it. The last put the disclosure content back in
+the served HTML and added the tests that hold all of it in place.
+
+Still open, and only Abhay can close them: the content gaps `npm run gaps`
+lists.

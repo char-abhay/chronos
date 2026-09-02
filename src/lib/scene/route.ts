@@ -9,9 +9,14 @@ import { DEFAULT_DESTINATION } from "@/lib/physics/space";
  * hydration, and so the camera and the CSS hue always agree on where we
  * are rather than each deciding for itself.
  *
- * Routes that are not regions -- /projects, /contact, /styleguide --
+ * Routes that are not regions -- /contact, /resume, /styleguide --
  * resolve to Home. They are reference material rather than places, and
  * parking the camera at the origin is the honest framing for that.
+ *
+ * /projects is not among them: it and every build page under it belong
+ * to Solar System, the region that catalogues the builds. This comment
+ * used to list /projects with the reference pages, which the branch
+ * below has never done.
  */
 export function destinationIdForPath(pathname: string): DestinationId {
   const match = destinations.find((d) => d.href === pathname);
