@@ -22,7 +22,7 @@ import { education, profile } from "@/content";
  */
 
 export const alt =
-  `CHRONOS — ${profile.name}, BCA graduate specialising in ` +
+  `CHRONOS — ${profile.name}, ${profile.credential} specialising in ` +
   education.specialisation;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -107,7 +107,7 @@ export default function Image() {
               lineHeight: 1.3,
             }}
           >
-            {"BCA graduate, " + education.specialisation}
+            {profile.credential + ", " + education.specialisation}
           </div>
           <div style={{ marginTop: 12, color: MUTED, fontSize: 26 }}>
             A journey through space and time that happens to be a portfolio.

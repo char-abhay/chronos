@@ -37,8 +37,14 @@ export type TrackItem = {
  * Why this earns the "flagship" slot on a site called CHRONOS -- it is
  * the one place where time is the interface rather than the subject.
  * It also reveals something true that a list cannot: the degree runs as
- * one long bar across the whole axis, and every build clusters into the
- * final twelve months. The shape of the work is the insight.
+ * one long bar across the whole axis, and every build sits inside its
+ * final stretch. The shape of the work is the insight.
+ *
+ * That used to read "the final twelve months", which was not true --
+ * two of the five builds are dated June and October 2025, outside a
+ * 2026 window. No number replaces it, deliberately: the shape is what
+ * the interaction reveals and the shape holds whatever gets added,
+ * while a count written here is a count nothing checks.
  *
  * Accessibility is not sacrificed for the effect:
  *   - it is a real <input type="range">, so arrows, Home and End all

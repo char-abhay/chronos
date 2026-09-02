@@ -73,6 +73,22 @@ describe("the recruiter guarantee", () => {
     expect(home).toContain(education.specialisation);
   });
 
+  it("carries the recorded credential into the title and the social tags", () => {
+    // This is what Google, LinkedIn and Slack show, and it used to be a
+    // second copy of the record typed by hand -- "BCA Graduate" written
+    // out beside a comment saying the facts here are read from source.
+    const html = servedHtml("index");
+    const title = html.match(/<title[^>]*>([^<]*)<\/title>/)?.[1] ?? "";
+    expect(title, "no <title> on the home page").not.toBe("");
+    expect(title).toContain(profile.name);
+    expect(title).toContain(profile.credential);
+
+    const og = [...html.matchAll(/<meta property="og:([a-z:]+)" content="([^"]*)"/g)];
+    const byKey = Object.fromEntries(og.map((m) => [m[1], m[2]]));
+    expect(byKey.title, "no og:title").toBeDefined();
+    expect(byKey.title).toContain(profile.credential);
+  });
+
   it("puts the name on every page a recruiter might land on first", () => {
     for (const route of ["index", "profile", "resume", "projects", "contact"]) {
       expect(servedText(route), "no name on /" + route).toContain(profile.name);

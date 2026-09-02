@@ -41,7 +41,7 @@ const jetbrainsMono = JetBrains_Mono({
    only the facts inside it are read from source. */
 const siteName = "CHRONOS — " + profile.name;
 const headline =
-  profile.name + " — BCA Graduate, " + education.specialisation;
+  profile.name + " — " + profile.credential + ", " + education.specialisation;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
