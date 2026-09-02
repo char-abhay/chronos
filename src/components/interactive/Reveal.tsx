@@ -1,24 +1,37 @@
-"use client";
-
-import { useId, useState } from "react";
 import { cn } from "@/lib/cn";
 
 /**
  * The curiosity primitive.
  *
- * A closed Reveal shows only a label and a prompt. Clicking it opens.
- * That is where the interest comes from -- the act of uncovering --
- * rather than from explanatory paragraphs sitting there already open.
+ * A closed Reveal shows only a label and a prompt. Opening it is where
+ * the interest comes from -- the act of uncovering -- rather than from
+ * explanatory paragraphs sitting there already open.
  *
- * Accessibility is not traded away for the effect:
- *   - it is a real <button> with aria-expanded and aria-controls
- *   - Enter, Space and tap all work
- *   - the content is in the DOM once opened, readable by screen readers
- *   - under reduced motion the height animation is skipped entirely
+ * Native <details>/<summary>, for the reasons already written down in
+ * Disclosure.tsx and not worth restating: the keyboard behaviour is the
+ * browser's, the expanded state is announced without any ARIA of ours,
+ * and no failed script can strand it half-open.
  *
- * `hint` is the closed-state teaser. Keep it short and slightly
- * withholding: it should make someone want to click, not summarise
- * what clicking would show.
+ * This was a <button> with useState and aria-expanded -- precisely the
+ * shape Disclosure's docblock calls "strictly worse on every axis that
+ * matters here" -- and the cost was not theoretical. The server renders
+ * the closed state, so `{open ? children : null}` put the children in
+ * no document at all. Five pages served their headings and nothing
+ * underneath: every project's what and why, the certifications, the
+ * tool chips, the challenge write-ups, the entire written record on
+ * /time. /black-holes shipped fewer characters than the page the README
+ * calls the sparsest on the site, and the print rules in globals.css
+ * that force a <details> open for paper had no markup to reach. The
+ * README calls working with JavaScript off a non-negotiable; this is
+ * the file that decided whether that was true.
+ *
+ * The content is now in the DOM from the first byte and collapsed by
+ * the browser, which keeps it out of the accessibility tree while
+ * closed -- the one property the old version did get right.
+ *
+ * Every open/closed style is a CSS variant rather than a branch. Where
+ * a hover and an open style set the same value there is no ordering
+ * hazard, which is why both are allowed to say border-signal/40.
  */
 export function Reveal({
   label,
@@ -35,71 +48,55 @@ export function Reveal({
   defaultOpen?: boolean;
   className?: string;
 }) {
-  const [open, setOpen] = useState(defaultOpen);
-  const id = useId();
-
   return (
-    <div
+    <details
+      // `|| undefined` rather than the bare boolean: passing open={false}
+      // hands React an attribute to keep managing, and a re-render from
+      // an ancestor could then slam a reader's open panel shut. Omitted
+      // entirely, the element is the browser's alone.
+      open={defaultOpen || undefined}
       className={cn(
-        "group rounded-[2px] border transition-colors dur-ui",
-        open
-          ? "border-signal/40 bg-ground-raised"
-          : "border-hairline hover:border-signal/40",
+        "group rounded-[2px] border border-hairline transition-colors dur-ui",
+        "hover:border-signal/40 open:border-signal/40 open:bg-ground-raised",
+        // Safari draws its own triangle from a pseudo-element that
+        // list-none does not reach.
+        "[&_summary::-webkit-details-marker]:hidden",
         className
       )}
     >
-      <button
-        type="button"
-        aria-expanded={open}
-        aria-controls={id}
-        onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-start gap-4 p-5 text-start"
-      >
+      <summary className="flex cursor-pointer list-none items-start gap-4 p-5 text-start">
         <span
           aria-hidden="true"
-          className={cn(
-            "mt-2 h-1.5 w-1.5 shrink-0 rounded-full transition-colors dur-ui",
-            open ? "bg-signal" : "bg-[var(--text-faint)] group-hover:bg-signal"
-          )}
+          className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--text-faint)] transition-colors dur-ui group-hover:bg-signal group-open:bg-signal"
         />
 
         <span className="flex-1">
           {meta ? (
-            <span className="block font-mono text-label uppercase tracking-label text-data tabular">
+            <span className="block font-mono text-label uppercase tracking-label text-data">
               {meta}
             </span>
           ) : null}
-          <span
-            className={cn(
-              "mt-1 block font-display text-body-lg transition-colors dur-ui",
-              open ? "text-signal" : "text-primary"
-            )}
-          >
+          <span className="mt-1 block font-display text-body-lg text-primary transition-colors dur-ui group-open:text-signal">
             {label}
           </span>
-          {hint && !open ? (
-            <span className="mt-1 block text-body-sm text-muted">{hint}</span>
+          {hint ? (
+            <span className="mt-1 block text-body-sm text-muted group-open:hidden">
+              {hint}
+            </span>
           ) : null}
         </span>
 
         <span
           aria-hidden="true"
-          className={cn(
-            "mt-1 shrink-0 font-mono text-label transition-transform dur-ui",
-            open ? "rotate-45 text-signal" : "text-faint"
-          )}
+          className="mt-1 shrink-0 font-mono text-label text-faint transition-transform dur-ui group-open:rotate-45 group-open:text-signal"
         >
           +
         </span>
-      </button>
+      </summary>
 
-      {/* Rendered only when open: nothing hidden-but-present for a screen
-          reader to stumble into, and no wasted markup when closed. */}
-      {open ? (
-        <div id={id} className="border-t border-hairline px-5 pb-6 pt-5 ps-14">
-          {children}
-        </div>
-      ) : null}
-    </div>
+      <div className="border-t border-hairline px-5 pb-6 pt-5 ps-14">
+        {children}
+      </div>
+    </details>
   );
 }
