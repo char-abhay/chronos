@@ -47,7 +47,13 @@ export function Tooltip({
       <button
         type="button"
         aria-expanded={open}
-        aria-controls={id}
+        // Only while there is something to control. The popover below is
+        // rendered on open, so a constant aria-controls spent most of its
+        // life pointing at an id that was not in the document -- a broken
+        // IDREF, which ARIA treats as an error and which is worse than
+        // the attribute simply being absent. aria-expanded already says
+        // what state the trigger is in.
+        aria-controls={open ? id : undefined}
         onClick={() => setOpen((v) => !v)}
         className={cn(
           "inline items-center text-start underline decoration-dotted",

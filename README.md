@@ -48,6 +48,14 @@ These are enforced, not aspirational.
   floor at 5.5:1 on the page base and 5.2:1 on raised plates. `--text-faint` is
   decorative only, and there is a test asserting it stays below AA so it cannot
   quietly become load-bearing.
+- **Structural accessibility is checked, not assumed.**
+  `tests/a11y.test.ts` walks every prerendered route: one `<h1>` each, no
+  skipped heading level, a `lang` and a `<main>`, unique ids, no positive
+  `tabindex`, an accessible name on every link, button, summary and form
+  control, and every `aria-labelledby`/`describedby`/`controls` pointing at an
+  element that exists. What it cannot judge — whether the focus order reads
+  well, whether the writing is clear — is left to a person, and the components
+  carry their own notes on it.
 - **No invented facts.** See below.
 
 ## The content layer
