@@ -182,6 +182,35 @@ describe("it works with JavaScript off", () => {
   });
 });
 
+describe("the styleguide stays out of search results", () => {
+  // README says it is noindexed and excluded from the sitemap. It is
+  // internal reference material, and it is also the one page that would
+  // rank for none of the things a recruiter searches for.
+  it("carries a noindex on the styleguide and not on the real pages", () => {
+    expect(servedHtml("styleguide")).toContain('name="robots" content="noindex');
+    for (const route of ["index", "profile", "resume", "projects"]) {
+      expect(servedHtml(route), "/" + route + " is noindexed").not.toContain(
+        'content="noindex'
+      );
+    }
+  });
+
+  it("leaves it out of the sitemap while listing every real route", () => {
+    const sitemap = fs.readFileSync(path.join(APP, "sitemap.xml.body"), "utf8");
+    expect(sitemap).not.toContain("/styleguide");
+    for (const project of projectsOrdered) {
+      expect(sitemap, project.slug + " is not in the sitemap").toContain(
+        "/projects/" + project.slug
+      );
+    }
+    // A Disallow would be the wrong tool here: a crawler told not to
+    // fetch the page never sees the noindex on it.
+    expect(fs.readFileSync(path.join(APP, "robots.txt.body"), "utf8")).not.toContain(
+      "Disallow"
+    );
+  });
+});
+
 describe("no invented facts reach the page", () => {
   it("never renders the UNKNOWN marker as text", () => {
     const routes = fs

@@ -13,9 +13,11 @@
   --ground-scrim:   rgb(8 9 11 / 0.82); /* mandatory backdrop behind text over motion */
 
   /* --- TEXT HIERARCHY (documented minimum contrast vs --ground) --- */
-  --text-primary:   #f2f0ec;  /* ~17:1  */
+  --text-primary:   #f2f0ec;  /* ~17.5:1 */
   --text-secondary: #b8b4ac;  /* ~9.7:1 */
-  --text-muted:     #8a867e;  /* ~5.4:1 — HARD FLOOR for meaningful text */
+  --text-muted:     #8a867e;  /* ~5.5:1 — HARD FLOOR for meaningful text.
+                                 5.2:1 on --ground-raised, the darkest it
+                                 gets anywhere, still clear of AA's 4.5. */
   --text-faint:     #5a5750;  /* ~2.7:1 — DECORATIVE ONLY, never load-bearing */
 
   /* --- ACCENTS: strictly separated by function --- */

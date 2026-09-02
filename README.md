@@ -41,9 +41,13 @@ These are enforced, not aspirational.
 - **Reduced motion is a rendering mode, not a fallback.** Components render a
   designed still state rather than a paused animation. Handled at four
   independent layers, down to the WebGL scene never being downloaded at all.
-- **Contrast has a documented floor.** Every text token in `src/styles/tokens.css`
-  carries its measured ratio. `--text-muted` at 5.4:1 is the hard floor for
-  anything meaningful; `--text-faint` is decorative only and never load-bearing.
+- **Contrast has a computed floor.** Every text token in `src/styles/tokens.css`
+  carries its measured ratio, and `tests/tokens.test.ts` recomputes all of them
+  from the hexes rather than trusting the comments. Everything that carries
+  meaning clears WCAG AA on all three background levels — `--text-muted` is the
+  floor at 5.5:1 on the page base and 5.2:1 on raised plates. `--text-faint` is
+  decorative only, and there is a test asserting it stays below AA so it cannot
+  quietly become load-bearing.
 - **No invented facts.** See below.
 
 ## The content layer
